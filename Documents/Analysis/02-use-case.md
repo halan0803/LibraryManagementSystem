@@ -213,7 +213,7 @@ Cấp lại khi còn nợ không xóa nợ hoặc tự khôi phục quyền mư�
 
 ### 5.6. Kết quả sau thực hiện
 
-- **Thành công:** các cuốn thuộc đúng phiếu/dòng của người nhận; hạn trả và tình trạng đã chốt; không cuốn nào có hai lượt mượn đang mở; tổng nghĩa vụ không vượt hạn mức.
+- **Thành công:** các cuốn thuộc đúng phiếu/dòng của người nhận; hạn trả và tình trạng đã chốt; không cuốn nào có hai lượt cùng chiếm quyền mượn; tổng nghĩa vụ không vượt hạn mức.
 - **Thất bại trước khi giao sách:** không có phiếu mới hoàn tất và không thay đổi quyền sở hữu lượt mượn; sách vẫn ở thư viện.
 
 ## 6. UC04 — Gia hạn mượn
@@ -274,7 +274,7 @@ Cấp lại khi còn nợ không xóa nợ hoặc tự khôi phục quyền mư�
 ### 7.2. Điều kiện trước
 
 1. Thủ thư có quyền nhận trả và ghi nhận thu tiền theo phân quyền.
-2. Có sách vật lý để đối chiếu và xác định đúng dòng mượn liên quan.
+2. Với nhận trả: có sách vật lý để đối chiếu và xác định đúng dòng mượn. Với thanh toán công nợ đã ghi nhận: có mã khoản phải thu và chứng từ liên quan, không yêu cầu nhận lại sách lần nữa.
 3. Hệ thống có hạn trả, tình trạng lúc giao và lịch mở cửa.
 
 Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới không phải lý do từ chối tiếp nhận trả sách.
@@ -295,6 +295,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 ### 7.4. Luồng thay thế
 
 - **Trả một phần phiếu:** chỉ các dòng được chọn thay đổi; dòng chưa trả giữ nguyên hạn và nghĩa vụ.
+- **Thanh toán công nợ sau nhận trả:** thủ thư chọn khoản chưa hoàn tất, đối soát tiền đã nhận, thu đủ phần còn phải thu theo Q01 và xác nhận chứng từ. Không ghi thêm lần nhận trả, không sửa ngày nhận thực tế và không tăng phạt sau ngày nhận sách. Với mất sách chưa nhận lại, việc tính lại phạt và tất toán thuộc UC08/Q02.
 - **Hao mòn hoặc dấu vết cũ:** ghi nhận tình trạng nhưng không phát sinh bồi thường cho phần đó.
 - **Phát hiện mất thay vì có cuốn để nhận:** xử lý báo mất bằng UC08; không ghi ngày trả vật lý giả.
 - **Đã nhận sách nhưng chưa thu được đủ hoặc có lỗi thu:** đi theo nhánh Q01 ở mục lỗi, chưa coi toàn bộ nghĩa vụ đã hoàn tất.
@@ -306,7 +307,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 | UC05-E01 | Không khớp cuốn/dòng hoặc dòng đã xử lý | Không tạo thêm lần trả; nếu gửi lặp đúng yêu cầu thì trả kết quả cũ. |
 | UC05-E02 | Ngày nhận không hợp lệ hoặc tình trạng thiếu thông tin | Yêu cầu sửa/đối chiếu; không tính khoản thu trên dữ liệu sai. |
 | UC05-E03 | Thu thiếu hoặc chưa xác nhận nhận tiền | Không đánh dấu khoản đã thu đủ; không tạo phiếu thu thành công cho số tiền chưa nhận. |
-| UC05-E04 | Đã nhận sách vật lý rồi thanh toán/lưu giao dịch lỗi | **Q01 chưa chốt:** đề xuất lưu dấu vết ngày nhận thật, giữ nghĩa vụ chưa thu, hạn chế quyền mới và đối soát. Không tiếp tục tăng phạt sau ngày nhận thật hoặc báo rằng sách đã tự quay lại độc giả. |
+| UC05-E04 | Đã nhận sách vật lý rồi thanh toán/lưu giao dịch lỗi | Áp dụng Q01: lưu ngày nhận thực tế và trạng thái nhận trả riêng với thanh toán; giữ khoản chưa thu, hạn chế quyền sử dụng mới và đối soát. Nếu chưa lưu được, giữ bằng chứng giao nhận để cập nhật đúng ngày nhận. Không tiếp tục tăng phạt sau ngày nhận thật hoặc báo rằng sách đã tự quay lại độc giả. |
 | UC05-E05 | Đã nhận tiền thật nhưng chưa xác nhận được dữ liệu lưu | Đối soát giao dịch trước khi thu lại; không yêu cầu nộp lần hai chỉ vì ứng dụng báo lỗi. |
 | UC05-E06 | Thiếu căn cứ định giá hoặc chưa được duyệt | Chuyển xử lý UC08; không tự đặt giá và không tuyên bố đã hoàn tất bồi thường. |
 | UC05-E07 | Xét hàng chờ hoặc gửi thông báo lỗi sau khi đã lưu nhận trả | Giữ ngày nhận và chứng từ; xử lý lại phần lỗi. Không mở cuốn cho mượn vượt quyền ưu tiên. |
@@ -315,7 +316,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 
 - **Thành công:** lưu đúng ngày nhận, tình trạng, khoản phát sinh và tiền thực thu; dòng đủ điều kiện kết thúc; phiếu chỉ hoàn tất khi mọi dòng đã xử lý xong.
 - **Thất bại trước giao nhận thực tế:** không có giao dịch thành công mới; dữ liệu không bị ghi dở.
-- **Ngoại lệ sau giao nhận thực tế:** phải giữ/đối soát bằng chứng nhận sách, nhận tiền; không đánh dấu hết nghĩa vụ khi còn khoản chưa giải quyết. Trạng thái chi tiết theo Q01 cần được chốt trước nghiệm thu.
+- **Ngoại lệ sau giao nhận thực tế:** phải giữ/đối soát bằng chứng nhận sách, nhận tiền; không đánh dấu hết nghĩa vụ khi còn khoản chưa giải quyết. Theo Q01, trạng thái nhận trả và thanh toán được theo dõi riêng; khoản chưa thu vẫn tồn tại và phạt quá hạn của cuốn đã nhận dừng tại ngày nhận thực tế.
 
 ## 8. UC06 — Đăng ký và hủy hàng chờ
 
@@ -383,7 +384,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 1. Lệnh xử lý đến từ thủ thư có quyền hoặc tác vụ nội bộ hợp lệ.
 2. Khi mở đợt mới, cuốn đã được kiểm tra, thực sự có thể giao và không đang cho mượn; có dòng mượn nguồn để tính mốc thẻ.
 3. Khi chuyển lượt hoặc xử lý đã giao, phải xác định đúng đợt/lượt hiện có và sự kiện liên quan.
-4. Lịch mở cửa và giờ kết thúc lượt phải có căn cứ được xác nhận; nếu dùng dữ liệu demo thì ghi rõ giả định Q03.
+4. Lịch mở cửa và giờ kết thúc lượt phải có căn cứ được xác nhận; áp dụng lịch mặc định và ngày nghỉ bổ sung theo Q03; dữ liệu demo phải ghi rõ các ngày nghỉ đã khai báo.
 
 ### 9.3. Luồng chính — Mở đợt và cấp lượt đầu
 
@@ -433,7 +434,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 | UC07-E01 | Không xác định được dòng nguồn cần thiết | Không tự chọn mốc 21/37. Nếu cuốn sẵn sàng và không thuộc đợt cần xét thì xử lý mượn trực tiếp; nếu dữ liệu liên quan thiếu, yêu cầu đối soát. |
 | UC07-E02 | Sách đã được giao hoặc không còn dùng được | Không cấp quyền nhận mới; xử lý đúng nhánh đã giao/tạm dừng. |
 | UC07-E03 | Sự kiện/tác vụ chạy lặp hoặc hai xử lý cùng mở đợt | Chỉ lưu một kết quả hợp lệ; không tạo hai đợt hoặc hai quyền nhận đồng thời. |
-| UC07-E04 | Giờ kết thúc lượt hoặc lịch cần thiết chưa được xác định | Không gửi thông báo có hạn nhận tùy ý; cần xác nhận Q03 hoặc dùng lịch demo đã công bố. |
+| UC07-E04 | Giờ kết thúc lượt hoặc lịch cần thiết chưa được xác định | Không gửi thông báo có hạn nhận tùy ý; khôi phục cấu hình lịch theo Q03 rồi tính lại trước khi cấp quyền. Không có ngày nghỉ đặc biệt thì dùng lịch mặc định thứ Hai đến thứ Bảy, đóng cửa lúc 17:00. |
 | UC07-E05 | Lỗi lưu hoặc thông báo | Giữ tính nhất quán của quyền ưu tiên; xử lý lại theo G05–G06, không cho giao vượt hàng. |
 
 ### 9.6. Kết quả sau thực hiện
@@ -467,15 +468,15 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 6. Hệ thống xác định tiền phạt riêng theo lịch, ngày thực nhận nếu đã trả hoặc quy tắc tất toán mất theo Q02.
 7. Thủ thư trình bày các khoản riêng biệt và phương án hợp lệ: hư nhẹ thu tiền; mất/hư nặng nhận tiền hoặc bản thay thế được duyệt.
 8. Nếu thanh toán tiền, thủ thư xác nhận thực thu đủ và hệ thống lưu chứng từ; nếu thay sách, chuyển UC09 để kiểm tra và nhận bản được duyệt.
-9. Hệ thống kiểm tra các nghĩa vụ đã được giải quyết; chỉ đánh dấu hoàn tất khi đủ điều kiện, đặc biệt không tự tất toán mất khi Q02 chưa được chốt cho trường hợp liên quan.
+9. Hệ thống kiểm tra các nghĩa vụ đã được giải quyết; chỉ đánh dấu hoàn tất khi đủ điều kiện, với mất sách, áp dụng Q02: chỉ tất toán khi bồi thường đã hoàn tất và tiền phạt đến ngày tất toán đã được thanh toán đủ; khấu trừ phần phạt đã thu.
 10. Hệ thống lưu nhật ký và hiển thị kết quả, khoản còn phải xử lý và trạng thái cuốn/dòng mượn.
 
 ### 10.4. Luồng thay thế
 
 - **Chỉ báo mất, chưa bồi thường:** lưu sự cố; nghĩa vụ sách và hạn mức vẫn còn, tiền phạt tiếp tục theo quy tắc. Không ghi ngày trả giả.
 - **Hao mòn hoặc hỏng đã có lúc giao:** không tính bồi thường cho phần đó; phạt quá hạn nếu có vẫn xét độc lập.
-- **Tìm lại trước hoàn tất bồi thường:** nhận qua UC05, hủy nghĩa vụ bồi thường mất, tính phạt đến ngày thực nhận; nếu hỏng thì đánh giá hỏng. Không tự hoàn một khoản đã thu khi chưa có căn cứ xử lý; các khoản đã nhận nhưng chưa tất toán phải đối soát theo quyết định Q02.
-- **Tìm lại sau hoàn tất bồi thường:** không hoàn tiền hoặc sách đã nộp; cuốn tìm lại thuộc người đọc, hồ sơ cuốn cũ vẫn lưu và không đưa vào lưu thông.
+- **Tìm lại trước tất toán nghĩa vụ mất sách theo Q02:** nhận qua UC05, hủy nghĩa vụ bồi thường mất, tính phạt đến ngày thực nhận; nếu hỏng thì đánh giá hỏng. Không tự hoàn một khoản đã thu khi chưa có căn cứ xử lý; các khoản đã nhận nhưng chưa tất toán phải được quản lý đối soát theo Q02 và mục 8.1 của tài liệu yêu cầu, giữ nguyên lịch sử chứng từ. Hoàn tất riêng phần bồi thường không chuyển tình huống này sang nhánh sau tất toán.
+- **Tìm lại sau tất toán nghĩa vụ mất sách theo Q02:** không hoàn tiền hoặc sách đã nộp; cuốn tìm lại thuộc người đọc, hồ sơ cuốn cũ vẫn lưu và không đưa vào lưu thông.
 - **Mất/hư nặng và chọn bản thay thế:** UC09 ghi biên nhận sách, không ghi thành tiền thực thu và không tự xóa khoản phạt.
 
 ### 10.5. Trường hợp lỗi
@@ -486,7 +487,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 | UC08-E02 | Thiếu căn cứ giá, giá không hợp lệ hoặc chưa có quyền duyệt | Giữ sự cố chờ xử lý, không tự chốt bồi thường. |
 | UC08-E03 | Hư nhẹ nhưng đề nghị bồi thường bằng bản sách | Từ chối phương án này, áp dụng hình thức tiền theo BR31. |
 | UC08-E04 | Đã bồi thường tiền sách nhưng tiếp tục nhận bản thay thế cho cùng nghĩa vụ | Ngăn thu trùng; đối soát chứng từ hiện có. |
-| UC08-E05 | Tiền phạt và bồi thường hoàn tất khác ngày, chưa có quyết định Q02 | Không tự xác định tất toán hoặc giải phóng hạn mức; ghi rõ phần đang chờ quyết định. |
+| UC08-E05 | Yêu cầu tất toán khi mới hoàn tất bồi thường hoặc tiền phạt chưa đủ đến ngày xử lý | Từ chối tất toán; áp dụng Q02, tính lại phạt đến ngày xử lý và trừ phần đã thu. Chỉ tất toán và giải phóng hạn mức khi đủ cả bồi thường và phạt; không từ chối chỉ vì hai nghĩa vụ được thanh toán khác ngày. |
 | UC08-E06 | Thu hoặc lưu lỗi sau giao nhận thực tế | Giữ căn cứ và đối soát như UC05; không thu lại khi chưa rõ kết quả trước. |
 
 ### 10.6. Kết quả sau thực hiện
@@ -585,7 +586,7 @@ Thẻ hết hạn, còn nợ hoặc đã bị dừng quyền sử dụng mới k
 | UC10-E01 | Người thao tác không có quyền hoặc căn cứ rời trường không rõ | Không thay đổi tư cách; yêu cầu kiểm tra căn cứ. |
 | UC10-E02 | Phát sinh nghĩa vụ mới trước khi xác nhận | Đối soát lại; không xác nhận hết nghĩa vụ trên dữ liệu cũ. |
 | UC10-E03 | Yêu cầu xóa phiếu, khoản thu hoặc lịch sử để đóng hồ sơ | Từ chối; bảo toàn chứng từ và nghĩa vụ. |
-| UC10-E04 | Yêu cầu ẩn danh tự động khi Q04 chưa chốt | Không thực hiện ẩn danh; vẫn có thể vô hiệu hóa quyền đúng quy trình. |
+| UC10-E04 | Yêu cầu xóa hoặc ẩn danh hồ sơ trong phiên bản bài tập | Từ chối vì ngoài phạm vi theo Q04; vẫn có thể vô hiệu hóa quyền và đóng hồ sơ đúng điều kiện, giữ lịch sử. |
 
 ### 12.6. Kết quả sau thực hiện
 

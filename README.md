@@ -18,40 +18,57 @@ Dự án được xây dựng bằng C#, tập trung vận dụng kiến thức 
 
 ### 2.2. Định hướng áp dụng OOP
 
-| Nguyên lý | Cách áp dụng dự kiến |
+| Nguyên lý | Cách áp dụng |
 | --- | --- |
-| Đóng gói | Quản lý dữ liệu bên trong các lớp; kiểm tra dữ liệu qua thuộc tính và phương thức. Ví dụ: cập nhật số sách còn có thể cho mượn thông qua nghiệp vụ mượn – trả, không cho phép số lượng âm. |
-| Trừu tượng | Xác định trách nhiệm và hành vi của từng lớp; dùng lớp trừu tượng hoặc interface cho phần có chung hợp đồng xử lý. Ví dụ: interface lưu trữ quy định thao tác đọc và ghi dữ liệu. |
-| Kế thừa | Dự kiến xây dựng lớp cơ sở `Nguoi` chứa thông tin chung như mã, họ tên và thông tin liên hệ; các lớp `DocGia`, `NhanVien` bổ sung dữ liệu và hành vi riêng. |
-| Đa hình | Xử lý các đối tượng `DocGia`, `NhanVien` qua kiểu cơ sở `Nguoi`; ghi đè phương thức lấy thông tin để thể hiện nội dung phù hợp với từng loại đối tượng. |
+| Đóng gói | Các lớp bảo vệ dữ liệu và kiểm tra điều kiện trước khi thay đổi trạng thái. Ví dụ: CuonSach thay đổi trạng thái qua phương thức nghiệp vụ; ChiTietMuon chỉ cho phép gia hạn một lần khi đủ điều kiện. |
+| Trừu tượng | Sử dụng lớp trừu tượng DocGia để biểu diễn thông tin và hành vi chung của độc giả; sử dụng interface để xác định hợp đồng lưu trữ, thông báo và các chính sách nghiệp vụ. |
+| Kế thừa | SinhVien và GiangVien kế thừa DocGia, bổ sung đặc điểm và chính sách mượn tương ứng. NhanVien có trách nhiệm và quyền riêng, không mặc nhiên là độc giả. |
+| Đa hình | Xử lý SinhVien và GiangVien thông qua kiểu DocGia; ghi đè SoNgayMuon() và GioiHanCuon() để áp dụng thời hạn và hạn mức theo từng loại độc giả. |
 
-Các lớp nghiệp vụ dự kiến gồm `Sach`, `DocGia`, `NhanVien`, `PhieuMuon` và `ChiTietPhieuMuon`. 
+Mô hình thực thể được tổ chức trong Domain/Entities, gồm 26 lớp:
 
-Giao diện, xử lý nghiệp vụ và lưu trữ dữ liệu được tách trách nhiệm. Các quy tắc mượn – trả được đặt trong phần xử lý nghiệp vụ để có thể kiểm thử độc lập với giao diện. Kế thừa và interface chỉ được sử dụng khi phù hợp với quan hệ và trách nhiệm thực tế.
+- Độc giả, nhân viên và tài khoản: DocGia, SinhVien, GiangVien, NhanVien, TheThuVien, TaiKhoan.
+- Danh mục và sách vật lý: DauSach, CuonSach, TacGia, TheLoai, NhaXuatBan, KeSach.
+- Mượn sách: PhieuMuon, ChiTietMuon.
+- Hàng chờ và giữ chỗ: DangKyCho, DotGiuCho, LuotGiuCho.
+- Sự cố, phê duyệt và chứng từ: BienBanSuCo, PheDuyet, KhoanThu, PhieuThu, ChiTietThu, BienNhanThayThe, BienBanThanhLy.
+- Thông báo và lịch sử: ThongBao, NhatKyThaoTac.
+
+DauSach lưu thông tin chung của một ấn bản; CuonSach quản lý từng bản sách vật lý. PhieuMuon chứa các ChiTietMuon để theo dõi riêng hạn trả, gia hạn và nhận trả của từng cuốn.
+
+Giao diện, xử lý nghiệp vụ và lưu trữ được tách trách nhiệm. Các lớp trong Application/Services điều phối chức năng, kiểm tra quyền và gọi phương thức của thực thể. Giao diện không trực tiếp tính tiền phạt hoặc sửa trạng thái sách để bỏ qua quy tắc nghiệp vụ.
 
 ## 3. Các chức năng dự kiến
 
-| Nhóm chức năng | Nội dung |
-| --- | --- |
-| Quản lý sách | Thêm, sửa, xóa hoặc ngừng sử dụng thông tin sách; quản lý mã sách, tên sách, tác giả, thể loại, tổng số lượng và số lượng còn có thể cho mượn. |
-| Quản lý độc giả | Thêm, cập nhật, tra cứu và quản lý trạng thái độc giả; lưu mã độc giả, họ tên và thông tin liên hệ. |
-| Tra cứu | Tìm sách theo mã, tên, tác giả hoặc thể loại; tìm độc giả theo mã hoặc tên. |
-| Mượn sách | Lập phiếu mượn, chọn độc giả và sách, ghi nhận ngày mượn và hạn trả; kiểm tra điều kiện mượn và cập nhật số lượng sách. |
-| Trả sách | Ghi nhận sách đã trả và ngày trả theo từng chi tiết phiếu mượn; cập nhật số lượng và trạng thái phiếu. |
-| Theo dõi quá hạn | Hiển thị các sách chưa trả đã vượt quá hạn trả và thông tin độc giả liên quan. |
-| Thống kê cơ bản | Thống kê số đầu sách, tổng số cuốn sách, số độc giả và số cuốn đang được mượn. |
-| Lưu trữ dữ liệu | Lưu và đọc lại dữ liệu để tiếp tục sử dụng sau khi đóng ứng dụng. |
+| Nhóm chức năng | Nội dung | Use Case |
+| --- | --- | --- |
+| Quản lý thẻ thư viện | Xác minh độc giả; cấp mới, cấp lại, gia hạn và khôi phục thẻ; bảo toàn hồ sơ và lịch sử. | UC01, UC02 |
+| Mượn và gia hạn sách | Kiểm tra điều kiện mượn, lập phiếu cho các cuốn hợp lệ; gia hạn riêng từng dòng mượn theo quy định. | UC03, UC04 |
+| Trả sách và thu tiền | Nhận từng cuốn, đối chiếu tình trạng, tính phạt và ghi nhận tiền thực thu; theo dõi riêng việc nhận trả và thanh toán. | UC05 |
+| Hàng chờ và giữ chỗ | Đăng ký hoặc hủy chờ theo cuốn; xét tối đa hai người trong một đợt, cấp quyền nhận tuần tự và xử lý hết lượt. | UC06, UC07 |
+| Xử lý mất, hỏng và bồi thường | Lập biên bản, xác định mức bồi thường, xử lý sách tìm lại; phê duyệt, nhận bản thay thế và thanh lý cuốn hư nặng. | UC08, UC09 |
+| Xác nhận nghĩa vụ và đóng hồ sơ | Đối soát sách, công nợ; xác nhận hoàn tất nghĩa vụ, dừng quyền hoặc đóng hồ sơ đúng điều kiện. | UC10 |
+| Quản lý danh mục và vị trí | Quản lý đầu sách, từng cuốn, tác giả, thể loại, nhà xuất bản và kệ sách; bảo toàn lịch sử lưu thông. | UC11 |
+| Tra cứu và thống kê | Tra cứu sách, khả dụng, lịch sử và nghĩa vụ theo quyền; thống kê sách đang mượn, quá hạn, khoản chưa thu và tiền thực thu. | UC12 |
 
-**Một số ràng buộc nghiệp vụ dự kiến:**
+Các chức năng dùng chung gồm đăng nhập, kiểm tra quyền, thông báo trong hệ thống, ghi nhật ký và lưu/đọc dữ liệu JSON.
 
-- Mã sách, mã độc giả và mã phiếu mượn không được trùng trong từng nhóm.
-- Chỉ cho mượn khi độc giả đang hoạt động và số sách còn đủ.
-- Số lượng mượn phải là số nguyên dương; hạn trả không được trước ngày mượn.
-- Không ghi nhận trả vượt số lượng đang mượn hoặc trả lặp lại cùng một khoản mượn.
-- Không xóa thông tin làm mất lịch sử mượn – trả; ưu tiên chuyển trạng thái ngừng sử dụng.
-- Giới hạn số sách được mượn và thời hạn mượn sẽ được thống nhất trong tuần đầu.
+**Các ràng buộc nghiệp vụ chính:**
 
-Các chức năng mở rộng như đăng nhập, phân quyền, đặt trước sách, tính tiền phạt hoặc xuất báo cáo chỉ được xem xét sau khi hoàn thành phần cốt lõi.
+- Sinh viên được mượn tối đa 3 cuốn, thời hạn 14 ngày mở cửa; giảng viên tối đa 5 cuốn, thời hạn 30 ngày mở cửa.
+- Hạn mức được tính trên tất cả phiếu mượn của độc giả.
+- Thẻ có hiệu lực 6 tháng lịch; chỉ gia hạn thẻ còn hạn trong 30 ngày cuối.
+- Mỗi dòng mượn chỉ được gia hạn một lần, chọn thêm 3, 5 hoặc 7 ngày mở cửa từ hạn trả cũ khi đủ điều kiện.
+- Tiền phạt quá hạn là 5.000 đồng/cuốn/ngày mở cửa; không tính ngày thư viện đóng cửa.
+- Mỗi độc giả chỉ có một đăng ký chờ hiệu lực trên toàn thư viện.
+- Nhận trả sách và thanh toán được theo dõi riêng. Không tiếp tục tăng phạt quá hạn sau ngày thư viện thực nhận sách.
+- Báo mất không tự dừng tiền phạt hoặc giải phóng hạn mức; việc tất toán thực hiện theo Q02.
+- Không xóa hồ sơ hoặc chứng từ để làm mất lịch sử và nghĩa vụ đã phát sinh.
+
+Quy tắc, điều kiện và các trường hợp ngoại lệ được trình bày đầy đủ trong:
+
+- [Phân tích yêu cầu](Documents/Analysis/01-phan-tich-yeu-cau.md).
+- [Đặc tả Use Case](Documents/Analysis/02-use-case.md).
 
 ## 4. Ngôn ngữ, framework và môi trường phát triển
 

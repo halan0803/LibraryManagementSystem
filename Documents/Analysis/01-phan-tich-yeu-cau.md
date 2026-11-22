@@ -65,7 +65,7 @@ Thủ thư lập biên bản khi sách bị báo mất hoặc có hư hỏng. Vi
 
 Khoản bồi thường được xác định theo mức độ và giá trị sách có căn cứ. Tiền phạt quá hạn và bồi thường là hai nghĩa vụ riêng. Với mất hoặc hư nặng, người đọc có thể nộp tiền hoặc bản sách thay thế được phê duyệt. Bản thay thế có mã mới và giữ liên kết với sự cố, cuốn cũ và hàng chờ có liên quan.
 
-Việc báo mất không tự kết thúc lượt mượn, giải phóng hạn mức hoặc dừng tiền phạt. Trường hợp tìm lại sách phải phân biệt trước và sau khi hoàn tất bồi thường.
+Việc báo mất không tự kết thúc lượt mượn, giải phóng hạn mức hoặc dừng tiền phạt. Trường hợp tìm lại sách phải phân biệt trước và sau khi tất toán nghĩa vụ mất sách theo Q02; hoàn tất riêng phần bồi thường chưa đồng nghĩa đã tất toán.
 
 ### 2.8. Kết thúc sử dụng thư viện
 
@@ -138,7 +138,7 @@ Danh sách gồm **12 Use Case**:
 | UC05 | Trả sách và thu tiền | Thủ thư | Nhận từng cuốn, tính phạt, kiểm tra hỏng, ghi nhận khoản phải thu và tiền thực thu; cập nhật dòng mượn và khả dụng |
 | UC06 | Đăng ký và hủy hàng chờ | Độc giả hoặc thủ thư được phép | Tạo đăng ký theo cuốn; chặn đăng ký hiệu lực thứ hai; hủy có lưu lịch sử và bảo toàn thứ tự |
 | UC07 | Xét và chuyển lượt giữ chỗ | Thủ thư, tác vụ nội bộ | Chọn tối đa hai người hợp lệ; cấp quyền nhận tuần tự, xử lý hết lượt và kiểm tra lại điều kiện |
-| UC08 | Xử lý mất, hỏng và bồi thường | Thủ thư, người quản lý | Lập biên bản, xác định giá và mức độ; tách phạt/bồi thường; xử lý tìm lại trước hoặc sau hoàn tất bồi thường |
+| UC08 | Xử lý mất, hỏng và bồi thường | Thủ thư, người quản lý | Lập biên bản, xác định giá và mức độ; tách phạt/bồi thường; xử lý tìm lại trước hoặc sau tất toán nghĩa vụ mất sách theo Q02 |
 | UC09 | Thanh lý và nhập bản thay thế | Người quản lý, thủ thư | Duyệt phương án, xử lý cuốn cũ, nhận bản mới có mã riêng; giữ lịch sử và liên kết hàng chờ hợp lệ |
 | UC10 | Xác nhận nghĩa vụ và đóng hồ sơ | Người quản lý | Đối soát sách/nợ; dừng quyền hoặc đóng hồ sơ đúng điều kiện; giữ giao dịch và nhật ký |
 | UC11 | Quản lý đầu sách, cuốn sách và vị trí | Thủ thư, người quản lý theo quyền | Thêm/sửa thông tin ấn bản, nhập từng cuốn, quản lý vị trí; kiểm tra mã trùng và dữ liệu không hợp lệ |
@@ -196,13 +196,13 @@ Khi cộng ngày mở cửa, không tính ngày bắt đầu. Thời hạn thẻ
 | BR10 | Sinh viên được mượn tối đa 14 ngày mở cửa, giảng viên 30 ngày mở cửa. Hạn trả được chốt khi giao sách. |
 | BR11 | Muốn mượn phải có thẻ còn hạn, còn quyền sử dụng, không còn khoản phải thu chưa thanh toán và không vượt hạn mức. Cuốn phải sẵn sàng hoặc đang giữ đúng cho người nhận. |
 | BR12 | Phải có cuốn khả dụng và bản được chọn phải đủ điều kiện giao. Không dùng tổng số lượng thay cho kiểm tra từng cuốn. |
-| BR13 | Một cuốn chỉ có tối đa một lượt mượn chưa kết thúc. Việc ghi nhận dòng mượn và cập nhật trạng thái cuốn phải nhất quán. |
+| BR13 | 	Một cuốn chỉ có tối đa một lượt đang chiếm quyền mượn tại một thời điểm. Dòng đã nhận trả nhưng còn nghĩa vụ tài chính được theo dõi riêng theo Q01, không tạo quyền giữ cuốn cho người mượn cũ. Việc ghi nhận dòng mượn và cập nhật trạng thái cuốn phải nhất quán. |
 | BR14 | Gia hạn theo từng cuốn, tối đa một lần trong mỗi lượt mượn, chọn 3/5/7 ngày. Cuốn chưa quá hạn, thẻ còn hạn, không nợ và không có đăng ký chờ hiệu lực. |
 | BR15 | Ngày gia hạn được cộng từ hạn trả cũ theo ngày mở cửa, không tính ngày hạn cũ. Chọn 3 ngày không cho phép gia hạn thêm lần nữa. |
 | BR16 | Không cho trả rồi mượn lại ngay để vượt hàng chờ. Phải xử lý quyền ưu tiên trước khi giao lại. |
 | BR17 | Cho trả một hoặc nhiều cuốn trong phiếu. Từng dòng có ngày trả, tình trạng và phạt riêng; phiếu chỉ hoàn tất khi mọi dòng đã xử lý xong nghĩa vụ. |
 | BR18 | Phải ghi dấu vết có sẵn lúc giao và đối chiếu khi nhận. Hao mòn thông thường không bị coi là hư hỏng phải bồi thường. |
-| BR19 | Khi trả sách, thư viện yêu cầu thanh toán đủ khoản phát sinh, không thanh toán một phần. Ngoại lệ thu tiền lỗi sau tiếp nhận vật lý còn cần chốt ở Q01. |
+| BR19 | Khi trả sách, thư viện yêu cầu thanh toán đủ khoản phát sinh, không thanh toán một phần. Ngoại lệ chưa hoàn tất thu tiền sau tiếp nhận vật lý được xử lý theo Q01; không ghi đã thu khi chưa xác nhận tiền thực nhận. |
 | BR20 | Khi quá hạn một ngày, gửi thông báo nhắc trả. Thông báo không thay đổi hạn trả và không thay thế nghĩa vụ tài chính. |
 
 ### 6.4. Hàng chờ và giữ chỗ
@@ -228,12 +228,12 @@ Quy ước xử lý: đăng ký bị kết thúc vì thiếu điều kiện ho�
 | BR30 | Hao mòn thông thường: 0%; hư nhẹ sửa được: 50%; hư nặng không dùng được: 100% giá trị. Căn cứ là giá bìa; nếu thiếu thì dùng định giá được duyệt và lưu lý do. |
 | BR31 | Mất hoặc hư nặng: bồi thường tiền hoặc bản thay thế được duyệt, đúng tên, tác giả, ngôn ngữ và phiên bản tương đương được chấp thuận. Hư nhẹ chỉ thu tiền. |
 | BR32 | Phạt quá hạn độc lập với bồi thường. Không thu đủ tiền sách rồi tiếp tục thu bản thay thế cho cùng nghĩa vụ. |
-| BR33 | Tìm lại trước hoàn tất bồi thường: nhận sách, hủy nghĩa vụ bồi thường mất và tính phạt đến ngày trả thực tế; nếu hỏng thì xử lý theo mức độ hỏng. |
-| BR34 | Tìm lại sau hoàn tất bồi thường: không hoàn tiền hoặc bản đã nộp; cuốn tìm lại thuộc người đọc. Hồ sơ cuốn cũ vẫn lưu và không được đưa lại vào lưu thông. |
-| BR35 | Báo mất không dừng phạt. Nếu quá hạn, phạt tiếp tục theo mốc tất toán đã thống nhất; trường hợp tiền phạt và bồi thường hoàn tất khác thời điểm còn cần chốt ở Q02. |
+| BR33 | Tìm lại trước tất toán nghĩa vụ mất sách theo Q02: nhận sách, hủy nghĩa vụ bồi thường mất và tính phạt đến ngày trả thực tế; nếu hỏng thì xử lý theo mức độ hỏng. |
+| BR34 | Tìm lại sau tất toán nghĩa vụ mất sách theo Q02: không hoàn tiền hoặc bản đã nộp; cuốn tìm lại thuộc người đọc. Hồ sơ cuốn cũ vẫn lưu và không được đưa lại vào lưu thông. |
+| BR35 | Báo mất không dừng phạt. Nếu quá hạn, phạt tiếp tục theo mốc tất toán đã thống nhất; nếu tiền phạt và bồi thường hoàn tất khác thời điểm, tính phạt đến ngày tất toán theo Q02 và khấu trừ phần đã thu. |
 | BR36 | Cuốn hư nặng được thanh lý và rời vị trí lưu thông; bản thay thế có mã mới, có thể dùng kệ cũ nếu phù hợp. Hư nhẹ chuyển sửa chữa, không tự thanh lý. |
 
-Tiền phạt cho một cuốn được tính bằng **5.000 đồng × số ngày mở cửa sau hạn trả đến hết ngày chốt**. Với cuốn trả thực tế, ngày chốt để tính phạt là ngày thư viện thực nhận; không thay ngày này bằng ngày thu tiền muộn hơn. Với cuốn mất chưa trả, phải thống nhất Q02 trước khi nghiệm thu cách tính.
+Tiền phạt cho một cuốn được tính bằng **5.000 đồng × số ngày mở cửa sau hạn trả đến hết ngày chốt**. Với cuốn trả thực tế, ngày chốt để tính phạt là ngày thư viện thực nhận; không thay ngày này bằng ngày thu tiền muộn hơn. Với cuốn mất chưa trả, ngày chốt là ngày tất toán theo Q02; khi chưa tất toán, số phạt tính đến ngày tra cứu chỉ là số tạm tính tại thời điểm đó.
 
 ### 6.6. Điều kiện áp dụng chung
 
@@ -306,10 +306,37 @@ Nhóm thống nhất các quy ước dưới đây để áp dụng đồng bộ
 - Chỉ người có quyền mới được truy cập thông tin lưu trữ.
 - Chức năng xóa hoặc ẩn danh theo thời hạn lưu trữ nằm ngoài phạm vi phiên bản bài tập.
 
+### 8.1. Tìm lại sách trước tất toán khi đã nhận bồi thường
+
+Mốc phân nhánh của BR33–BR34 là ngày tất toán nghĩa vụ mất sách theo Q02. Hoàn tất riêng phần bồi thường chưa đồng nghĩa đã tất toán.
+
+Nếu đã nhận tiền sách hoặc bản thay thế nhưng còn tiền phạt, sau đó tìm lại cuốn cũ: nhận cuốn cũ qua UC05, dừng phạt tại ngày thực nhận, hủy nghĩa vụ bồi thường mất theo BR33 và đối soát các chứng từ đã nhận. Nếu sách hỏng thì đánh giá nghĩa vụ hỏng theo tình trạng thực tế.
+
+Không xóa phiếu thu/biên nhận và không tự hoàn tiền hoặc trả bản thay thế khi chưa có quyết định của người quản lý. Kết quả đối soát phải lưu căn cứ, người xử lý và thời điểm. Khoản đang chờ đối soát chưa được coi là đã giải quyết toàn bộ; hoàn tiền tự động không thuộc phạm vi phiên bản bài tập.
+
+### 8.2. Phân biệt lượt mượn, nghĩa vụ sách và công nợ
+
+Ngày nhận sách vật lý được lưu độc lập với ngày thanh toán. Cuốn đã nhận phải qua kiểm tra tình trạng và xét ưu tiên trước khi được giao tiếp.
+
+BR13 ngăn hai lượt cùng chiếm quyền mượn một cuốn; dòng lịch sử đã nhận sách nhưng còn công nợ không đồng nghĩa cuốn vẫn đang ở người mượn cũ.
+
+Điều kiện kết thúc nghĩa vụ của dòng và phiếu vẫn tuân BR17/Q01; không dùng trạng thái khả dụng của cuốn để xóa công nợ. Riêng sách mất chỉ được giải phóng hạn mức khi tất toán Q02.
+
 ## 9. Phân công và sử dụng tài liệu
 
 | Thành viên | Use Case chịu trách nhiệm chính |
 | --- | --- |
 | Trần Thị Hà Lan | UC01, UC02, UC06, UC07, UC10, UC11 |
 | Hoàng Văn Quân | UC03, UC04, UC05, UC08, UC09, UC12 |
-| Cả hai | Rà soát quy tắc, chốt điểm mở, thống nhất dữ liệu và hợp đồng phối hợp, tích hợp và kiểm thử các luồng giao nhau |
+| Cả hai | Rà soát quy tắc, thống nhất dữ liệu và hợp đồng phối hợp, tích hợp và kiểm thử các luồng giao nhau. |
+
+## 10. Phạm vi hai phân hệ
+
+| Phân hệ | Phạm vi chức năng | Use Case | Phụ trách |
+| --- | --- | --- | --- |
+| PH-A — Độc giả, danh mục và hàng chờ | Thẻ, hồ sơ, danh mục sách, đăng ký chờ và quyền nhận sách | UC01, UC02, UC06, UC07, UC10, UC11 | Trần Thị Hà Lan |
+| PH-B — Lưu thông, sự cố và thống kê | Mượn, gia hạn, trả, thu tiền, mất/hỏng, thanh lý, nhận bản thay thế và tra cứu/thống kê | UC03, UC04, UC05, UC08, UC09, UC12 | Hoàng Văn Quân |
+
+Hai phân hệ cùng sử dụng dữ liệu độc giả, thẻ, cuốn, phiếu, hàng chờ, khoản thu và lịch sử. Không tạo hai hồ sơ độc giả hoặc hai bản ghi cuốn độc lập cho từng phân hệ.
+
+Mượn/trả và hàng chờ phải phối hợp để bảo toàn quyền nhận; đóng hồ sơ phải đối soát nghĩa vụ của cả hai phân hệ. Một service có thể hỗ trợ nhiều Use Case; phân công UC không buộc mọi file phải thuộc riêng một phân hệ.

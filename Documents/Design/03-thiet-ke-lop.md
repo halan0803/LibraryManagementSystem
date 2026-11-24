@@ -583,7 +583,7 @@ Các enum phân loại còn lại gồm: `LoaiDocGia` (SinhVien/GiangVien), `Vai
 - Khi cuốn hỏng đã sửa xong, nhân viên kiểm tra lại trước khi xét hàng chờ. Không phục hồi hạn nhận cũ đã trôi qua; cấp lượt hợp lệ với thời hạn mới từ lúc thực sự cấp quyền. Quy tắc tối đa hai người vẫn áp dụng trong mỗi đợt.
 
 
-**Các ca Lan và Quân cần đối chiếu khi tích hợp**
+**đối chiếu khi tích hợp**
 
 | Tình huống | Trạng thái trước | Kết quả phải lưu | Điều kiện cần kiểm tra |
 | --- | --- | --- | --- |

@@ -14,6 +14,7 @@ internal sealed partial class NghiepVu
         }
         foreach (var dong in DongCua(ma).Where(d => d.TrangThai == TrangThaiMuon.MatChoXuLy))
             TaoKhoan(dong, LoaiKhoanThu.PhatQuaHan, PhatConLai(dong));
+        YeuCau(!TatCa<KhoanThu>().Any(k => k.MaDocGia == ma && k.TrangThai == TrangThaiKhoanThu.ChoDoiSoat), "DOI_SOAT", "Cần đối soát trước khi thu lại.");
         var no = TatCa<KhoanThu>().Where(k => k.MaDocGia == ma && k.TrangThai == TrangThaiKhoanThu.ChuaThu).ToArray();
         YeuCau(tien > 0 && tien == no.Sum(k => k.SoTienChot), "THU", "Số tiền phải bằng tổng nghĩa vụ chưa thu.");
         string id = MaMoi();
@@ -40,3 +41,4 @@ internal sealed partial class NghiepVu
         SuaDong(dong with { TrangThai = TrangThaiMuon.HoanTat, NgayChotPhat = dong.NgayNhan ?? Ngay, NgayKetThucNghiaVu = Ngay });
     }
 }
+

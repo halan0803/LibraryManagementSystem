@@ -8,6 +8,9 @@ internal sealed partial class NghiepVu
         ["Xem hồ sơ"] = ["Mã độc giả"],
         ["Tìm lại sách"] = ["Mã dòng mượn", "Tình trạng (Tot/HaoMon/HuNhe/HuNang)"],
         ["Định giá"] = ["Mã cuốn", "Giá", "Căn cứ"],
+        ["Chờ đối soát"] = ["Mã khoản", "Căn cứ"],
+        ["Xác nhận đối soát"] = ["Mã khoản", "Chứng từ", "Đã nhận tiền (true/false)"],
+        ["Chờ bản thay thế"] = ["Mã đăng ký", "Tiếp tục (true/false)"],
         ["Thống kê"] = [],
         ["Cấp thẻ"] = ["Mã trường"],
         ["Cấp lại thẻ"] = ["Mã độc giả"],
@@ -56,9 +59,13 @@ internal sealed partial class NghiepVu
             case "Nhập sách": NhapSach(a[0], a[1], a[2], a[3], a[4], a[5], decimal.Parse(a[6]), a[7]); break;
             case "Tìm lại sách": TimLai(a[0], Enum.Parse<TinhTrangSach>(a[1], true)); break;
             case "Định giá": DinhGia(a[0], decimal.Parse(a[1]), a[2]); break;
+            case "Chờ đối soát": GhiNhanChoDoiSoat(a[0], a[1]); break;
+            case "Xác nhận đối soát": DoiSoat(a[0], a[1], bool.Parse(a[2])); break;
+            case "Chờ bản thay thế": ChoBanMoi(a[0], bool.Parse(a[1])); break;
             default: throw new ArgumentException("Thao tác không hợp lệ.");
         }
         return "Đã lưu.";
     }
 }
+
 

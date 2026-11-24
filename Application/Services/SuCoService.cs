@@ -12,6 +12,7 @@ internal sealed partial class NghiepVu
     internal void NhanTra(string maDong, TinhTrangSach tinhTrang)
     {
         NhanVien();
+        YeuCau(Enum.IsDefined(tinhTrang), "TINH_TRANG", "Tình trạng không hợp lệ.");
         var dong = Dong(maDong);
         YeuCau(dong.TrangThai is TrangThaiMuon.DangMuon or TrangThaiMuon.MatChoXuLy, "TRA", "Cuốn đã tiếp nhận.");
         var cuon = Lay<CuonSach>(dong.MaCuon);
@@ -62,7 +63,9 @@ internal sealed partial class NghiepVu
         Them(new BienBanSuCo { MaSuCo = id, MaDongMuon = dong.MaDong, Loai = loai, MucDo = muc, MinhChung = canCu,
             NgayBao = Ngay, MaNguoiLap = Phien.MaTaiKhoan, GiaTriSachChot = gia, TyLeBoiThuong = tyLe,
             TrangThai = gia == null ? TrangThaiSuCo.ChoPheDuyet : TrangThaiSuCo.DangGiaiQuyet });
+        TamDungCho(cuon.MaCuon, id);
         if (gia.HasValue) TaoKhoan(dong, LoaiKhoanThu.BoiThuong, gia.Value * tyLe, id);
     }
 }
+
 

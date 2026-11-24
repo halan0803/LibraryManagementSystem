@@ -43,6 +43,9 @@ internal sealed partial class NghiepVu
         Them(new BienNhanThayThe { MaBienNhan = bienNhan, MaCuonCu = cu.MaCuon, MaCuonMoi = maMoi, MaSuCo = maSC,
             MaNguoiDuyet = Phien.MaTaiKhoan, MaNguoiNhan = Phien.MaTaiKhoan, MaPheDuyet = duyet, NgayNhan = Ngay });
         Them(new CuonSach { MaCuon = maMoi, MaDauSach = dauSach, GiaBia = cu.GiaBia, MaKe = ke });
+        foreach (var c in TatCa<DangKyCho>().Where(c => c.MaCuon == cu.MaCuon && c.TrangThai == TrangThaiDangKyCho.TamDung && c.TiepTucChoBanThayThe == true))
+            Sua(c with { MaCuon = maMoi, TrangThai = TrangThaiDangKyCho.DangCho });
+        XetCho(dong with { MaCuon = maMoi });
         Sua(khoan! with { TrangThai = TrangThaiKhoanThu.DaTatToanBangSach, MaBienNhan = bienNhan, CachTatToan = CachTatToan.BanThayThe });
         if (sc.Loai == LoaiSuCo.Mat) TaoKhoan(dong, LoaiKhoanThu.PhatQuaHan, PhatConLai(dong));
         KetThucNeuDu(dong);
@@ -59,3 +62,4 @@ internal sealed partial class NghiepVu
         Sua(cu with { TrangThaiLuuThong = TrangThaiCuonSach.DaThanhLy, MaKe = null });
     }
 }
+

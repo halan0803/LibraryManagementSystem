@@ -11,6 +11,10 @@ internal sealed partial class NghiepVu
         ["Chờ đối soát"] = ["Mã khoản", "Căn cứ"],
         ["Xác nhận đối soát"] = ["Mã khoản", "Chứng từ", "Đã nhận tiền (true/false)"],
         ["Chờ bản thay thế"] = ["Mã đăng ký", "Tiếp tục (true/false)"],
+        ["Chuyển kệ"] = ["Mã cuốn", "Mã kệ"],
+        ["Sửa danh mục"] = ["Loại (Tác giả/Thể loại/NXB)", "Mã", "Tên"],
+        ["Cập nhật đầu sách"] = ["Mã đầu sách", "Tên", "Mã tác giả", "Mã thể loại", "Mã NXB"],
+        ["Xác nhận nghĩa vụ"] = ["Mã độc giả"],
         ["Thống kê"] = [],
         ["Cấp thẻ"] = ["Mã trường"],
         ["Cấp lại thẻ"] = ["Mã độc giả"],
@@ -62,10 +66,15 @@ internal sealed partial class NghiepVu
             case "Chờ đối soát": GhiNhanChoDoiSoat(a[0], a[1]); break;
             case "Xác nhận đối soát": DoiSoat(a[0], a[1], bool.Parse(a[2])); break;
             case "Chờ bản thay thế": ChoBanMoi(a[0], bool.Parse(a[1])); break;
+            case "Chuyển kệ": ChuyenKe(a[0], a[1]); break;
+            case "Sửa danh mục": SuaDanhMuc(a[0], a[1], a[2]); break;
+            case "Cập nhật đầu sách": SuaDauSach(a[0], a[1], a[2], a[3], a[4]); break;
+            case "Xác nhận nghĩa vụ": return XacNhanNghiaVu(a[0]);
             default: throw new ArgumentException("Thao tác không hợp lệ.");
         }
         return "Đã lưu.";
     }
 }
+
 
 

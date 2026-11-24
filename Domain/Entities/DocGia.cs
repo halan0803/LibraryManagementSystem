@@ -28,6 +28,12 @@ public abstract class DocGia
     public abstract int GioiHanCuon();
     public bool DuocSuDung() => TinhTrangQuyen == TrangThaiDocGia.HoatDong;
 
+    public void DongHoSo(string lyDo)
+    {
+        DungQuyen(lyDo);
+        TinhTrangQuyen = TrangThaiDocGia.DaDong;
+    }
+
     public void DungQuyen(string lyDo)
     {
         YeuCau(TinhTrangQuyen != TrangThaiDocGia.DaDong, "HO_SO_DA_DONG", "Hồ sơ đã đóng.");
@@ -35,3 +41,4 @@ public abstract class DocGia
         TinhTrangQuyen = TrangThaiDocGia.DungQuyen;
     }
 }
+

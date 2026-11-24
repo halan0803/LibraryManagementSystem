@@ -9,9 +9,10 @@ internal static class Program
     [STAThread]
     private static void Main(string[] args)
     {
-        if (args is ["--kiem-thu"]) { KiemThuNghiepVu.Chay(); return; }
+        if (args is ["--kiem-thu"]) { KiemThuNghiepVu.Chay(); IntegrationTests.Chay(); return; }
         ApplicationConfiguration.Initialize();
         var app = new AppBootstrapper(AppContext.BaseDirectory);
         System.Windows.Forms.Application.Run(new ThuVienForm(new PhienThuVien(app)));
     }
 }
+

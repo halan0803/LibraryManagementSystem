@@ -47,10 +47,13 @@ internal sealed partial class NghiepVu
         foreach (var luot in dot.DanhSachLuot.Where(l => l.MaDangKy != cho.MaDangKy))
         {
             var c = Lay<DangKyCho>(luot.MaDangKy);
-            if (c.TrangThai == TrangThaiDangKyCho.DaDuocChon) Sua(c with { TrangThai = TrangThaiDangKyCho.DangCho });
+            if (c.TrangThai != TrangThaiDangKyCho.DaDuocChon) continue;
+            int soNgay = Lay<DocGia>(cho.MaDocGia).LoaiDocGia == LoaiDocGia.SinhVien ? 21 : 37;
+            bool hopLe = ConQuyen(c.MaDocGia) && ConCho(c.MaDocGia, 1) && TheHienHanh(c.MaDocGia)!.NgayHetHan >= lich.CongNgayMoCua(Ngay, soNgay);
+            Sua(c with { TrangThai = hopLe ? TrangThaiDangKyCho.DangCho : TrangThaiDangKyCho.DaKetThuc,
+                LyDoKetThuc = hopLe ? null : "Không đủ điều kiện theo dòng mượn mới" });
         }
         Sua(dot with { TrangThai = TrangThaiDotGiuCho.KetThuc, DanhSachLuot = dot.DanhSachLuot.Select(l =>
             l with { TrangThai = l.MaDangKy == cho.MaDangKy ? TrangThaiLuotGiuCho.DaNhan : TrangThaiLuotGiuCho.DaHuy }).ToList() });
     }
 }
-

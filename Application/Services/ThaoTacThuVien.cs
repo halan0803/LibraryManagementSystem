@@ -15,7 +15,7 @@ internal sealed partial class NghiepVu
         ["Sửa danh mục"] = ["Loại (Tác giả/Thể loại/NXB)", "Mã", "Tên"],
         ["Cập nhật đầu sách"] = ["Mã đầu sách", "Tên", "Mã tác giả", "Mã thể loại", "Mã NXB"],
         ["Xác nhận nghĩa vụ"] = ["Mã độc giả"],
-        ["Thống kê"] = [],
+        ["Thống kê"] = ["Thu từ ngày (yyyy-MM-dd, tùy chọn)", "Đến ngày (yyyy-MM-dd, tùy chọn)"],
         ["Cấp thẻ"] = ["Mã trường"],
         ["Cấp lại thẻ"] = ["Mã độc giả"],
         ["Gia hạn thẻ"] = ["Mã độc giả"],
@@ -34,6 +34,8 @@ internal sealed partial class NghiepVu
         ["Nhập sách"] = ["Mã đầu sách", "Tên sách", "Tác giả", "Phiên bản", "Ngôn ngữ", "Mã cuốn", "Giá bìa", "Mã kệ"],
     };
 
+    private static DateOnly? NgayLoc(string? s) => string.IsNullOrWhiteSpace(s) ? null : DateOnly.ParseExact(s, "yyyy-MM-dd");
+
     internal object ThucHien(string ten, params string[] a)
     {
         _ = Phien;
@@ -44,7 +46,7 @@ internal sealed partial class NghiepVu
         {
             case "Tra cứu sách": return TraSach(a[0]);
             case "Xem hồ sơ": return HoSo(a[0]);
-            case "Thống kê": return ThongKe();
+            case "Thống kê": return ThongKe(NgayLoc(a.ElementAtOrDefault(0)), NgayLoc(a.ElementAtOrDefault(1)));
             case "Cấp thẻ": return CapThe(a[0]);
             case "Cấp lại thẻ": DoiThe(a[0], ten); break;
             case "Gia hạn thẻ": DoiThe(a[0], ten); break;
@@ -75,6 +77,3 @@ internal sealed partial class NghiepVu
         return "Đã lưu.";
     }
 }
-
-
-

@@ -109,3 +109,29 @@ Hướng dẫn môi trường: [C# trong VS Code](https://code.visualstudio.com/
 - Khi thay đổi thiết kế ảnh hưởng đến lớp khác, trao đổi và cập nhật tài liệu trước khi tích hợp.
 - Các thành viên cùng tích hợp chương trình, kiểm thử toàn hệ thống và rà soát báo cáo.
 - Cập nhật README theo tiến độ thực tế; chỉ đánh dấu hoàn thành sau khi chức năng đã được kiểm tra.
+## Chạy phiên bản WinForms trên nhánh reader
+
+Từ thư mục chứa project, chạy trong PowerShell:
+
+```powershell
+& C:\OOP\.dotnet\dotnet.exe run
+& C:\OOP\.dotnet\dotnet.exe run -c Release -- --kiem-thu
+```
+
+Trên máy Windows có .NET 10 SDK trong PATH, dùng `dotnet run`. Ứng dụng đọc appsettings.json dưới thư mục chạy. Lần đăng nhập đầu tiên tạo dữ liệu mẫu trong Data/thu-vien.json bên cạnh ứng dụng đã build. Bản Debug và Release mặc định có dữ liệu riêng. Tệp khóa bảo vệ giao dịch giữa các tiến trình. Các bài kiểm thử dùng tệp JSON riêng.
+
+### Tài khoản và kịch bản demo
+
+| Tên đăng nhập | Vai trò | Mật khẩu demo |
+| --- | --- | --- |
+| thuthu | Thủ thư | ThuVien@123 |
+| docgia | Độc giả DG01 | ThuVien@123 |
+| quanly | Quản lý | ThuVien@123 |
+
+1. Đăng nhập bằng **thuthu**, chọn **Mượn sách**, nhập độc giả DG01, cuốn C01 và mã yêu cầu DEMO-01. Dùng một mã mới cho yêu cầu mới.
+2. Chọn **Xem hồ sơ** của DG01, lấy MaDong của C01. Đăng nhập bằng **docgia** để gia hạn dòng đó thêm 3 ngày.
+3. Dùng **thuthu** cấp thẻ cho GV01. Sao chép mã độc giả được trả về, đăng ký chờ C01 cho độc giả này. Nhận trả dòng mượn của DG01 với tình trạng Tot, rồi xem thông báo trong hồ sơ của người chờ.
+4. Giao C01 cho người có quyền nhận bằng một yêu cầu mượn mới. Báo mất bằng mã dòng mới. Xem công nợ, thu đủ số tiền với một mã giao dịch duy nhất. Nếu cần đối soát chứng từ, dùng **Chờ đối soát** trước khi ghi thu lại.
+5. Đăng nhập bằng **quanly**, xem thống kê, xác nhận nghĩa vụ và đóng hồ sơ đã hoàn tất. Để demo bản thay thế, nhận trả một cuốn khác với tình trạng HuNang, lấy mã sự cố từ thống kê, nhập bản mới cùng mã đầu sách rồi thanh lý cuốn cũ.
+
+**Kiểm thử đã chạy.** Bản Release biên dịch thành công. Bộ kiểm thử kiểm tra lịch mở cửa, tính phạt, đọc lại đối tượng kế thừa và một kịch bản tích hợp qua 12 nhóm use case. Các trường hợp bị từ chối gồm mượn nhiều cuốn có mã sai, gia hạn lần hai, đăng ký chờ trùng, mượn vượt quyền giữ chỗ, đóng hồ sơ còn nghĩa vụ và độc giả gọi thống kê. Kết quả test dịch vụ không thay thế kiểm thử thủ công trên giao diện.

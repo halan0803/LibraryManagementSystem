@@ -57,7 +57,10 @@ internal sealed partial class NghiepVu
             var c = Lay<DangKyCho>(ds[i].MaDangKy);
             if (c.TrangThai == TrangThaiDangKyCho.DangCoQuyenNhan && ds[i].HanNhan > luc) return;
             if (c.TrangThai == TrangThaiDangKyCho.DangCoQuyenNhan)
+            {
                 Sua(c with { TrangThai = TrangThaiDangKyCho.DaKetThuc, LyDoKetThuc = "Hết hạn nhận" });
+                Bao(c.MaDocGia, ds[i].MaLuot + "-het", LoaiThongBao.HetLuot, $"Hết lượt nhận cuốn {cuon}.");
+            }
             if (c.TrangThai == TrangThaiDangKyCho.DaDuocChon)
             {
                 ds[i] = ds[i] with { TrangThai = TrangThaiLuotGiuCho.DangCoQuyen, ThoiDiemKichHoat = luc, HanNhan = lich.HanNhanSauHaiNgay(luc) };
@@ -73,4 +76,3 @@ internal sealed partial class NghiepVu
         Sua(Lay<CuonSach>(cuon) with { TrangThaiLuuThong = TrangThaiCuonSach.SanSang });
     }
 }
-

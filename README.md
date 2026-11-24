@@ -109,3 +109,11 @@ Hướng dẫn môi trường: [C# trong VS Code](https://code.visualstudio.com/
 - Khi thay đổi thiết kế ảnh hưởng đến lớp khác, trao đổi và cập nhật tài liệu trước khi tích hợp.
 - Các thành viên cùng tích hợp chương trình, kiểm thử toàn hệ thống và rà soát báo cáo.
 - Cập nhật README theo tiến độ thực tế; chỉ đánh dấu hoàn thành sau khi chức năng đã được kiểm tra.
+
+## 6. Quy ước viết code
+
+1. **Đặt tên nhất quán.** Dùng tiếng Việt không dấu cho tên nghiệp vụ. Viết tên lớp, thuộc tính và phương thức theo PascalCase (`CuonSach`, `MaCuon`, `DanhDauMuon`), tham số và biến cục bộ theo camelCase (`maCuon`). Tên interface bắt đầu bằng `I`, ví dụ `ILichMoCua`.
+2. **Thống nhất thay đổi hợp đồng dùng chung.** Khi đổi constructor, chữ ký phương thức, giá trị enum hoặc mã lỗi mà phần khác sử dụng, mô tả thay đổi trong pull request để người phụ trách phần liên quan rà soát. Cập nhật [hợp đồng giữa các thành phần](Documents/Design/04-kien-truc-va-pattern.md) và các chỗ gọi bị ảnh hưởng.
+3. **Đặt nghiệp vụ đúng tầng.** WinForms nhận dữ liệu và hiển thị kết quả. Service kiểm tra quyền và điều phối thao tác. Thực thể và chính sách trong Domain thực thi quy tắc nghiệp vụ. Ví dụ, mọi luồng tính hạn trả đều dùng `ILichMoCua` để xử lý ngày nghỉ nhất quán.
+4. **Mỗi giao dịch có một nơi quyết định lưu.** Khi mượn nhiều cuốn, `MuonTraService` chịu trách nhiệm `Commit` hoặc `Rollback` toàn bộ yêu cầu. Phần kho cập nhật các cuốn trong cùng giao dịch. Chỉ phát thông báo mượn thành công sau khi commit thành công.
+5. **Kiểm thử trước khi gộp.** Mỗi thay đổi nghiệp vụ phải build thành công và có kiểm thử cho cả trường hợp thành công lẫn trường hợp bị từ chối. Ví dụ, nếu một trong hai cuốn được yêu cầu không đủ điều kiện mượn, kiểm thử phải xác nhận hệ thống từ chối cả yêu cầu, không tạo phiếu và cuốn còn lại vẫn sẵn sàng.

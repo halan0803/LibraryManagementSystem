@@ -1,9 +1,17 @@
+using LibraryManagementSystem.Presentation;
+using LibraryManagementSystem.Application.Services;
 using LibraryManagementSystem.Tests;
 
-if (args is ["--kiem-thu"])
-{
-    KiemThuNghiepVu.Chay();
-    return;
-}
+namespace LibraryManagementSystem;
 
-Console.WriteLine("Hệ thống quản lý thư viện. Dùng --kiem-thu để chạy kiểm thử nghiệp vụ.");
+internal static class Program
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        if (args is ["--kiem-thu"]) { KiemThuNghiepVu.Chay(); return; }
+        ApplicationConfiguration.Initialize();
+        var app = new AppBootstrapper(AppContext.BaseDirectory);
+        System.Windows.Forms.Application.Run(new ThuVienForm(new PhienThuVien(app)));
+    }
+}

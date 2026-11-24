@@ -4,7 +4,7 @@ using LibraryManagementSystem.Domain.Services;
 
 namespace LibraryManagementSystem.Application.Services;
 
-internal sealed partial class NghiepVu(ITransactionManager giaoDich, ILichMoCua lich, DateTimeOffset luc)
+internal sealed partial class NghiepVu(ITransactionManager giaoDich, ILichMoCua lich, DateTimeOffset luc, IDonViTruongGateway truong)
 {
     private DateOnly Ngay => DateOnly.FromDateTime(luc.ToOffset(TimeSpan.FromHours(7)).DateTime);
     private IRepository<T> Kho<T>() where T : class => giaoDich.Kho<T>();
@@ -47,3 +47,4 @@ internal sealed partial class NghiepVu(ITransactionManager giaoDich, ILichMoCua 
         YeuCau(Phien.VaiTro != VaiTro.DocGia || Phien.MaDocGia == docGia,
             "PHAN_QUYEN", "Chỉ được thao tác trên hồ sơ của mình.");
 }
+

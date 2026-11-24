@@ -14,7 +14,7 @@ internal sealed class PhienThuVien(AppBootstrapper app)
     {
         using var db = new GiaoDichJson(app.DuongDanDuLieu);
         db.BatDau();
-        var luc = DateTimeOffset.UtcNow;
+        var luc = app.DongHo.BayGio;
         DuLieuDemo.Tao(db, DateOnly.FromDateTime(luc.ToOffset(TimeSpan.FromHours(7)).DateTime));
         var nv = new NghiepVu(db, new LichMoCua(app.CauHinh.NgayNghiDacBiet, app.CauHinh.GioDongCua),
             luc, new DonViTruongGiaLap(DuLieuDemo.Truong));
@@ -28,3 +28,4 @@ internal sealed class PhienThuVien(AppBootstrapper app)
         return kq;
     }
 }
+

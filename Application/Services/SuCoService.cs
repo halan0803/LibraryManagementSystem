@@ -56,10 +56,13 @@ internal sealed partial class NghiepVu
     {
         string id = MaMoi();
         decimal tyLe = loai == LoaiSuCo.Mat || muc == TinhTrangSach.HuNang ? 1m : .5m;
-        decimal? gia = cuon.GiaBia ?? (cuon.MaPheDuyetGia == null ? null : cuon.GiaDinhGia);
+        Domain.Strategies.IChinhSachDinhGia chinhSach = cuon.GiaBia.HasValue
+            ? new Domain.Strategies.DinhGiaTheoGiaBia() : new Domain.Strategies.DinhGiaThuVien();
+        decimal? gia = cuon.GiaBia.HasValue || cuon.MaPheDuyetGia != null ? chinhSach.GiaTriSach(cuon) : null;
         Them(new BienBanSuCo { MaSuCo = id, MaDongMuon = dong.MaDong, Loai = loai, MucDo = muc, MinhChung = canCu,
             NgayBao = Ngay, MaNguoiLap = Phien.MaTaiKhoan, GiaTriSachChot = gia, TyLeBoiThuong = tyLe,
             TrangThai = gia == null ? TrangThaiSuCo.ChoPheDuyet : TrangThaiSuCo.DangGiaiQuyet });
         if (gia.HasValue) TaoKhoan(dong, LoaiKhoanThu.BoiThuong, gia.Value * tyLe, id);
     }
 }
+

@@ -62,6 +62,7 @@ internal sealed partial class NghiepVu
             {
                 ds[i] = ds[i] with { TrangThai = TrangThaiLuotGiuCho.DangCoQuyen, ThoiDiemKichHoat = luc, HanNhan = lich.HanNhanSauHaiNgay(luc) };
                 Sua(c with { TrangThai = TrangThaiDangKyCho.DangCoQuyenNhan });
+                Bao(c.MaDocGia, ds[i].MaLuot, LoaiThongBao.QuyenNhan, $"Được nhận cuốn {cuon} đến {ds[i].HanNhan:dd/MM/yyyy HH:mm}.");
                 Sua(dot with { DanhSachLuot = ds });
                 Sua(Lay<CuonSach>(cuon) with { TrangThaiLuuThong = TrangThaiCuonSach.DangGiuCho });
                 return;
@@ -72,3 +73,4 @@ internal sealed partial class NghiepVu
         Sua(Lay<CuonSach>(cuon) with { TrangThaiLuuThong = TrangThaiCuonSach.SanSang });
     }
 }
+

@@ -45,7 +45,11 @@ internal sealed partial class NghiepVu
             YeuCau(sach.TrangThaiLuuThong == TrangThaiCuonSach.SanSang ||
                 (sach.TrangThaiLuuThong == TrangThaiCuonSach.DangGiuCho && cho?.MaDocGia == ma),
                 "CUON", $"Cuốn {id} chưa thể giao.");
-            if (cho != null) Sua(cho with { TrangThai = TrangThaiDangKyCho.DaNhan });
+            if (cho != null)
+            {
+                Sua(cho with { TrangThai = TrangThaiDangKyCho.DaNhan });
+                KetThucDotKhiMuon(cho);
+            }
             Sua(sach with { TrangThaiLuuThong = TrangThaiCuonSach.DangMuon });
             ds.Add(new ChiTietMuon { MaDong = MaMoi(), MaCuon = id, MaPhieu = phieu, NgayMuon = Ngay,
                 LoaiDocGiaLucMuon = dg.LoaiDocGia, HanTra = lich.CongNgayMoCua(Ngay, dg.SoNgayMuon()),
@@ -56,3 +60,4 @@ internal sealed partial class NghiepVu
         return phieu;
     }
 }
+

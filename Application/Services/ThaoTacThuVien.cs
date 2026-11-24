@@ -6,6 +6,8 @@ internal sealed partial class NghiepVu
     {
         ["Tra cứu sách"] = ["Từ khóa"],
         ["Xem hồ sơ"] = ["Mã độc giả"],
+        ["Tìm lại sách"] = ["Mã dòng mượn", "Tình trạng (Tot/HaoMon/HuNhe/HuNang)"],
+        ["Định giá"] = ["Mã cuốn", "Giá", "Căn cứ"],
         ["Thống kê"] = [],
         ["Cấp thẻ"] = ["Mã trường"],
         ["Cấp lại thẻ"] = ["Mã độc giả"],
@@ -28,6 +30,7 @@ internal sealed partial class NghiepVu
     internal object ThucHien(string ten, params string[] a)
     {
         _ = Phien;
+        NhacQuaHan();
         foreach (var cuon in TatCa<CuonSach>().Where(c => c.TrangThaiLuuThong == TrangThaiCuonSach.DangGiuCho))
             ChuyenLuot(cuon.MaCuon);
         switch (ten)
@@ -51,8 +54,11 @@ internal sealed partial class NghiepVu
             case "Dừng quyền": XuLyHoSo(a[0], a[1], false); break;
             case "Đóng hồ sơ": XuLyHoSo(a[0], a[1], true); break;
             case "Nhập sách": NhapSach(a[0], a[1], a[2], a[3], a[4], a[5], decimal.Parse(a[6]), a[7]); break;
+            case "Tìm lại sách": TimLai(a[0], Enum.Parse<TinhTrangSach>(a[1], true)); break;
+            case "Định giá": DinhGia(a[0], decimal.Parse(a[1]), a[2]); break;
             default: throw new ArgumentException("Thao tác không hợp lệ.");
         }
         return "Đã lưu.";
     }
 }
+

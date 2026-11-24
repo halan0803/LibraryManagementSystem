@@ -126,6 +126,24 @@ HoSoService đối soát sách, sự cố và khoản thu của cả hai phân h
 
 Không dùng riêng trạng thái thẻ để thay thế kiểm tra ngày thực tế: thẻ có trạng thái hiện hành vẫn có thể đã hết hạn. Việc thay đổi lịch không tự sửa hạn đã giao; phép tính phạt dùng ngày mở cửa thực tế đã được xác nhận theo Q03.
 
+### Hợp đồng Lan–Quân đề xuất
+
+Tại commit `ffa17e9`, mã đã có 13 enum trạng thái với 55 giá trị theo UML, `NghiepVuException`, `ILichMoCua`, `IRepository<T>`, `ITransactionManager` và `IDonViTruongGateway`. Các tệp thực thể, hai interface Strategy, interface kho sách và nhóm Observer vẫn là khung trống.
+
+**Chờ Lan và Quân xác nhận trước khi viết service.** Các chữ ký và mã lỗi dưới đây là đề xuất để hai bên rà soát cùng nhau.
+
+| Điểm cần chốt | Đề xuất cho bên gọi và bên cài đặt |
+| --- | --- |
+| Factory tạo độc giả | Quân cung cấp `SinhVien(string maDocGia, string maTruong, string hoTen)` và `GiangVien(string maDocGia, string maTruong, string hoTen)`. Factory của Lan chọn lớp theo loại độc giả đã xác minh và trả về `DocGia`. |
+| Tìm cuốn | `CuonSach? TimCuon(string maCuon)` trả về `null` nếu mã chưa tồn tại, cùng quy ước với `IRepository<T>.LayTheoMa`. Với thao tác bắt buộc có cuốn, service gọi chuyển kết quả này thành lỗi `KHONG_TIM_THAY`. |
+| Chuyển trạng thái kho | Đề xuất `void DanhDauMuon(string maCuon, string maDocGia, long phienBanDuKien)` và `void DanhDauTra(string maCuon, TinhTrangSach tinhTrangNhan, long phienBanDuKien)`. Kho kiểm tra trạng thái và phiên bản hiện tại rồi cập nhật cuốn trong giao dịch do service gọi mở. |
+| Báo lỗi giữa hai phần | Dùng `NghiepVuException.MaLoi` để bên gọi phân biệt lỗi. Giữ mã hiện có `KHONG_TIM_THAY`. Đề xuất `XUNG_DOT_PHIEN_BAN` khi dữ liệu đã đổi và `CUON_KHONG_THE_GIAO` khi cuốn đang mượn hoặc giữ cho người khác. Giao diện hiển thị thông báo kèm mã cuốn. |
+| Strategy phạt và định giá | Quân khai báo `decimal TinhPhat(int soNgay)` và `decimal GiaTriSach(CuonSach cuon)`. Lan cung cấp giá bìa, giá định lại và mã phê duyệt trên cuốn. Nếu thiếu cả hai căn cứ giá, giữ sự cố chờ phê duyệt. |
+| Thông báo và nhật ký | Lan khai báo `IKenhThongBao.Gui(ThongBao)`, `INhatKyService.Ghi(NhatKyThaoTac)` và hợp đồng Observer. Quân phát sự kiện với mã sự kiện, loại thao tác, thời điểm và mã đối tượng để Lan truy vết và tránh xử lý lặp. |
+| Commit và phát sự kiện | `MuonTraService` mở và kết thúc giao dịch bao gồm phiếu, dòng mượn, trạng thái cuốn và lượt giữ chỗ liên quan. Nếu một cuốn trong yêu cầu mượn bị từ chối, rollback toàn bộ yêu cầu. Publisher phát sự kiện thành công sau commit. Observer dùng mã sự kiện để thử lại khi gửi thông báo lỗi. |
+
+Hai bên kiểm tra hợp đồng bằng ba ca ở mục 4.2 của [thiết kế lớp](03-thiet-ke-lop.md). Bổ sung ca cạnh tranh UC03-E05: khi hai yêu cầu chọn cùng cuốn và cùng phiên bản, chỉ một yêu cầu được lưu phiếu. Yêu cầu còn lại phải đọc lại trạng thái trước khi thử lại.
+
 ## 5. Giao diện và phân quyền
 
 | Nhóm màn hình WinForms | Service được gọi | Người được thao tác |

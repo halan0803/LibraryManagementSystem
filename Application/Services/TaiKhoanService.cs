@@ -6,6 +6,16 @@ namespace LibraryManagementSystem.Application.Services;
 
 internal sealed partial class NghiepVu(ITransactionManager giaoDich, ILichMoCua lich, DateTimeOffset luc, IDonViTruongGateway truong)
 {
+    internal Events.ThuVienEventPublisher BoPhat { get; } = TaoBoPhat(giaoDich);
+
+    private static Events.ThuVienEventPublisher TaoBoPhat(ITransactionManager db)
+    {
+        var boPhat = new Events.ThuVienEventPublisher();
+        boPhat.DangKy(new Observers.NhatKyObserver(new Infrastructure.Logging.NhatKyService(db)));
+        boPhat.DangKy(new Observers.ThongBaoObserver(new Infrastructure.Notifications.ThongBaoTrongHeThong(db)));
+        return boPhat;
+    }
+
     private DateOnly Ngay => DateOnly.FromDateTime(luc.ToOffset(TimeSpan.FromHours(7)).DateTime);
     private IRepository<T> Kho<T>() where T : class => giaoDich.Kho<T>();
     private T Lay<T>(string ma) where T : class => BatBuoc(Kho<T>().LayTheoMa(ma), ma);
@@ -47,4 +57,5 @@ internal sealed partial class NghiepVu(ITransactionManager giaoDich, ILichMoCua 
         YeuCau(Phien.VaiTro != VaiTro.DocGia || Phien.MaDocGia == docGia,
             "PHAN_QUYEN", "Chỉ được thao tác trên hồ sơ của mình.");
 }
+
 

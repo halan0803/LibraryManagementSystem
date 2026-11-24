@@ -30,8 +30,8 @@ internal sealed partial class NghiepVu
     private void Bao(string ma, string suKien, LoaiThongBao loai, string noiDung)
     {
         if (TatCa<ThongBao>().Any(t => t.MaSuKien == suKien && t.NguoiNhan == ma)) return;
-        Them(new ThongBao { MaThongBao = MaMoi(), MaSuKien = suKien, NguoiNhan = ma,
-            NoiDung = noiDung, Loai = loai, ThoiDiemTao = luc, TrangThai = TrangThaiThongBao.DaGui, SoLanGui = 1 });
+        BoPhat.GhiNhan(new(ThongBao: new ThongBao { MaThongBao = MaMoi(), MaSuKien = suKien, NguoiNhan = ma,
+            NoiDung = noiDung, Loai = loai, ThoiDiemTao = luc, TrangThai = TrangThaiThongBao.DaGui, SoLanGui = 1 }));
     }
 
     private void NhacQuaHan()
@@ -53,3 +53,4 @@ internal sealed partial class NghiepVu
             l with { TrangThai = l.MaDangKy == cho.MaDangKy ? TrangThaiLuotGiuCho.DaNhan : TrangThaiLuotGiuCho.DaHuy }).ToList() });
     }
 }
+

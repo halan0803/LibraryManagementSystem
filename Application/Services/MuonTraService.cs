@@ -8,8 +8,7 @@ internal sealed partial class NghiepVu
     private bool ConQuyen(string ma) => Lay<DocGia>(ma).DuocSuDung()
         && TheHienHanh(ma) is { } the && the.NgayHetHan >= Ngay && !CoNo(ma);
 
-    private bool ConCho(string ma, int them) => DongCua(ma).Count(d =>
-        d.TrangThai is TrangThaiMuon.DangMuon or TrangThaiMuon.MatChoXuLy) + them <= Lay<DocGia>(ma).GioiHanCuon();
+    private bool ConCho(string ma, int them) => Domain.Services.QuyTacMuon.ConHanMuc(Lay<DocGia>(ma), DongCua(ma), them);
 
     private ChiTietMuon Dong(string ma) => TatCa<PhieuMuon>().SelectMany(p => p.DanhSachDongMuon)
         .SingleOrDefault(d => d.MaDong == ma) ?? throw new InvalidOperationException("Không tìm thấy dòng mượn.");
@@ -60,4 +59,5 @@ internal sealed partial class NghiepVu
         return phieu;
     }
 }
+
 

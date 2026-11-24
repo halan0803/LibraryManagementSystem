@@ -21,11 +21,12 @@ internal sealed class PhienThuVien(AppBootstrapper app)
         nv.XacThuc(ten, matKhau);
         object kq = thaoTac == null ? "Đăng nhập thành công" : nv.ThucHien(thaoTac, giaTri);
         if (thaoTac != null)
-            db.Kho<NhatKyThaoTac>().Luu(new NhatKyThaoTac { MaNhatKy = MaMoi(), HanhDong = thaoTac,
-                MaTaiKhoanThucHien = ten, ThoiDiem = luc, MaDoiTuong = giaTri.FirstOrDefault() ?? "", LoaiDoiTuong = thaoTac });
+            nv.BoPhat.GhiNhan(new(NhatKy: new NhatKyThaoTac { MaNhatKy = MaMoi(), HanhDong = thaoTac,
+                MaTaiKhoanThucHien = ten, ThoiDiem = luc, MaDoiTuong = giaTri.FirstOrDefault() ?? "", LoaiDoiTuong = thaoTac }));
         db.Commit();
         SuKien.Phat(thaoTac ?? "Đăng nhập");
         return kq;
     }
 }
+
 

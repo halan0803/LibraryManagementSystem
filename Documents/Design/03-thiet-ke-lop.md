@@ -583,6 +583,14 @@ Các enum phân loại còn lại gồm: `LoaiDocGia` (SinhVien/GiangVien), `Vai
 - Khi cuốn hỏng đã sửa xong, nhân viên kiểm tra lại trước khi xét hàng chờ. Không phục hồi hạn nhận cũ đã trôi qua; cấp lượt hợp lệ với thời hạn mới từ lúc thực sự cấp quyền. Quy tắc tối đa hai người vẫn áp dụng trong mỗi đợt.
 
 
+**đối chiếu khi tích hợp**
+
+| Tình huống | Trạng thái trước | Kết quả phải lưu | Điều kiện cần kiểm tra |
+| --- | --- | --- | --- |
+| UC05 · Nhận lại cuốn dùng được, còn tiền phạt | Cuốn và dòng mượn đều `DangMuon` | Dòng thành `DaNhanChoXuLy`, ghi ngày nhận và ngày chốt phạt. Cuốn chuyển `ChoXetUuTien`. Khoản phạt `ChuaThu`. | Phạt dừng ở ngày nhận thực tế. Nếu đã nhận tiền mà chưa xác minh được chứng từ, chuyển xử lý đối soát trước khi thu lại. |
+| UC08 · Báo mất, chưa tất toán | Dòng `DangMuon`, chưa ghi ngày nhận | Cuốn thành `Mat`, dòng thành `MatChoXuLy`. Ghi biên bản và giữ nguyên số cuốn đang tính vào hạn mức. | Theo Q02, chỉ kết thúc nghĩa vụ khi đã bồi thường và trả đủ phạt tính đến ngày tất toán. |
+| UC03/UC07 · Người được giữ chỗ đến nhận | Cuốn `DangGiuCho`, lượt `DangCoQuyen` | Ghi dòng mượn, chuyển cuốn sang `DangMuon` và lượt nhận sang `DaNhan` trong cùng giao dịch. | Kiểm tra người nhận, hạn nhận và điều kiện mượn tại thời điểm giao. Nếu là người thứ nhất, xét lại đăng ký của người thứ hai theo dòng nguồn mới. |
+
 ## 5. Service và ánh xạ Use Case
 
 Service thuộc `Application/Services` kiểm tra quyền, tải dữ liệu hiện tại, thực thi quy tắc liên đối tượng, gọi hành vi thực thể rồi lưu nhất quán.

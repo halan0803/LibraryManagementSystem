@@ -126,6 +126,20 @@ HoSoService đối soát sách, sự cố và khoản thu của cả hai phân h
 
 Không dùng riêng trạng thái thẻ để thay thế kiểm tra ngày thực tế: thẻ có trạng thái hiện hành vẫn có thể đã hết hạn. Việc thay đổi lịch không tự sửa hạn đã giao; phép tính phạt dùng ngày mở cửa thực tế đã được xác nhận theo Q03.
 
+### Cách các thành phần phối hợp trong một giao dịch
+
+**Tạo hồ sơ độc giả.** Khi nhà trường đã xác nhận loại độc giả, Factory chọn lớp tương ứng và gọi `SinhVien(string maDocGia, string maTruong, string hoTen)` hoặc `GiangVien(string maDocGia, string maTruong, string hoTen)`. Factory trả kết quả về cho dịch vụ cấp thẻ qua kiểu cơ sở `DocGia`. Nhờ đó, hai loại độc giả dùng chung quy trình cấp thẻ nhưng vẫn có hạn mức và thời hạn mượn riêng.
+
+**Tra cứu và cập nhật cuốn sách.** Phương thức `CuonSach? TimCuon(string maCuon)` trả về `null` khi kho không có mã cuốn cần tìm. Khi lập phiếu mượn hoặc nhận trả, `MuonTraService` cần xác định đúng cuốn để tiếp tục. Nếu tra cứu không có kết quả, dịch vụ báo lỗi `KHONG_TIM_THAY` kèm mã cuốn để thủ thư kiểm tra lại.
+
+Kho sách dùng `void DanhDauMuon(string maCuon, string maDocGia, long phienBanDuKien)` khi giao sách và `void DanhDauTra(string maCuon, TinhTrangSach tinhTrangNhan, long phienBanDuKien)` khi nhận lại. Tham số `phienBanDuKien` là phiên bản của cuốn sách tại thời điểm thủ thư chọn cuốn. Trước khi ghi, kho đối chiếu phiên bản này với dữ liệu hiện tại và kiểm tra trạng thái lưu thông. Nếu dữ liệu đã thay đổi, kho báo lỗi `XUNG_DOT_PHIEN_BAN`. Nếu cuốn đang được mượn hoặc đang giữ cho độc giả khác, kho báo lỗi `CUON_KHONG_THE_GIAO`. Các mã lỗi được lưu trong `NghiepVuException.MaLoi` để giao diện hiển thị đúng nguyên nhân và mã cuốn liên quan.
+
+**Tính phạt và bồi thường.** Khi nhận trả, hệ thống đếm số ngày mở cửa quá hạn rồi gọi `decimal TinhPhat(int soNgay)` để tính tiền phạt. Khi xử lý sách mất hoặc hỏng, `decimal GiaTriSach(CuonSach cuon)` xác định giá trị cuốn sách làm căn cứ bồi thường. Hệ thống ưu tiên giá bìa. Nếu thiếu giá bìa, thư viện dùng giá định lại có phê duyệt và lưu mã phê duyệt để đối chiếu. Sự cố còn thiếu căn cứ giá được giữ ở trạng thái chờ phê duyệt.
+
+**Lưu phiếu và phát sự kiện.** `MuonTraService` lưu phiếu mượn, các dòng mượn, trạng thái từng cuốn và lượt giữ chỗ liên quan trong cùng một giao dịch. Nếu một cuốn không đủ điều kiện giao, dịch vụ hủy toàn bộ yêu cầu. Chẳng hạn, khi hai thủ thư cùng chọn một cuốn đang sẵn sàng, chỉ yêu cầu lưu thành công trước mới lập được phiếu. Thủ thư còn lại phải tải lại trạng thái cuốn trước khi thử lại (UC03-E05).
+
+Sau khi giao dịch được lưu thành công, hệ thống phát sự kiện gồm mã sự kiện, thao tác, thời điểm và mã đối tượng liên quan. Các Observer gọi `IKenhThongBao.Gui(ThongBao)` để gửi thông báo và `INhatKyService.Ghi(NhatKyThaoTac)` để ghi nhật ký. Nếu gửi thông báo thất bại, lần gửi lại dùng cùng mã sự kiện để tránh tạo thông báo trùng. Các trạng thái cần lưu khi nhận trả, báo mất và giao sách giữ chỗ được mô tả tại mục 4.2 của [tài liệu thiết kế lớp](03-thiet-ke-lop.md).
+
 ## 5. Giao diện và phân quyền
 
 | Nhóm màn hình WinForms | Service được gọi | Người được thao tác |

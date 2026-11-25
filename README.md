@@ -96,10 +96,18 @@ Hướng dẫn môi trường: [C# trong VS Code](https://code.visualstudio.com/
 | --- | --- | --- | --- |
 | Tuần 1 — Ngày 1–3 | Phân tích yêu cầu | Mô tả hoạt động thư viện; xác định người sử dụng, phạm vi, chức năng và quy tắc mượn – trả; lựa chọn công nghệ. | Tài liệu yêu cầu, danh sách chức năng và ràng buộc nghiệp vụ được thống nhất. |
 | Tuần 1 — Ngày 4–7 | Phân tích và thiết kế | Xác định các lớp, trách nhiệm, thuộc tính, phương thức, bất biến và quan hệ; vẽ sơ đồ lớp; phác thảo giao diện, thiết kế lưu trữ và chia nhiệm vụ theo lớp. | Thiết kế ban đầu, chữ ký phương thức dùng chung, bảng phân công và kho mã nguồn. |
-| Tuần 2 — Ngày 8–11 | Lập trình các lớp | Cài đặt lớp theo thiết kế; xử lý quản lý sách, độc giả và mượn – trả; xây dựng phần đọc, ghi dữ liệu; kiểm thử từng phần ngay khi hoàn thành. | Các lớp nghiệp vụ và phần lưu trữ chạy được với dữ liệu mẫu. |
+| Tuần 2 — Ngày 8–11 | Xây dựng nền tảng chung và lập trình các chức năng | CKhởi tạo khung dự án, cấu hình và các thành phần dùng chung; cài đặt các lớp theo phân công; xây dựng nghiệp vụ và lưu trữ; kiểm thử, tích hợp từng phần khi hoàn thành. | Nền tảng chung được thống nhất; các chức năng đã triển khai chạy được với dữ liệu mẫu và có thể tích hợp. |
 | Tuần 2 — Ngày 12–14 | Xây dựng giao diện và tích hợp | Hoàn thiện các màn hình chính; kết nối giao diện với nghiệp vụ; tích hợp mã nguồn của các thành viên và kiểm tra luồng mượn – trả. | Phiên bản đầu tiên thực hiện được các chức năng cốt lõi. |
 | Tuần 3 — Ngày 15–18 | Kiểm thử và hoàn thiện | Kiểm tra luồng bình thường, dữ liệu sai và trường hợp biên; kiểm tra lưu, tải lại dữ liệu; sửa lỗi và rà soát cách áp dụng OOP. | Bảng kết quả kiểm thử, lỗi đã xử lý và phiên bản chạy ổn định trong phạm vi đã chọn. |
 | Tuần 3 — Ngày 19–21 | Hoàn thiện tài liệu và bàn giao | Cập nhật README và sơ đồ theo mã nguồn thực tế; hoàn thiện báo cáo; chuẩn bị dữ liệu và kịch bản trình diễn; kiểm tra chạy trên máy khác. | Mã nguồn hoàn chỉnh, hướng dẫn chạy, báo cáo, kết quả kiểm thử và bản trình diễn. |
+
+## 6. Quy ước viết code
+
+1. **Đặt tên nhất quán:** Dùng tiếng Việt không dấu cho tên nghiệp vụ. Viết tên lớp, thuộc tính và phương thức theo PascalCase (`CuonSach`, `MaCuon`, `DanhDauMuon`), tham số và biến cục bộ theo camelCase (`maCuon`). Tên interface bắt đầu bằng `I`, ví dụ `ILichMoCua`.
+2. **Thống nhất thay đổi hợp đồng dùng chung:** Khi đổi constructor, chữ ký phương thức, giá trị enum hoặc mã lỗi mà phần khác sử dụng, mô tả thay đổi trong pull request để người phụ trách phần liên quan rà soát. Cập nhật [hợp đồng giữa các thành phần](Documents/Design/04-kien-truc-va-pattern.md) và các chỗ gọi bị ảnh hưởng.
+3. **Đặt nghiệp vụ đúng tầng:** Tầng Presentation nhận dữ liệu và hiển thị kết quả. Giai đoạn đầu dùng Console để chạy kiểm thử; giao diện hoàn chỉnh dùng WinForms. Service kiểm tra quyền và điều phối thao tác. Thực thể và chính sách trong Domain thực thi quy tắc nghiệp vụ. Ví dụ, mọi luồng tính hạn trả đều dùng `ILichMoCua` để xử lý ngày nghỉ nhất quán.
+4. **Mỗi giao dịch có một nơi quyết định lưu:** Service điều phối nghiệp vụ trực tiếp quản lý giao dịch hoặc sử dụng bộ điều phối chung. Khi mượn nhiều cuốn, toàn bộ yêu cầu phải được Commit hoặc Rollback trong cùng một giao dịch. Các thành phần được gọi bên trong không tự Commit riêng. Chỉ phát thông báo thành công sau khi Commit thành công.
+5. **Kiểm thử trước khi gộp:** Mỗi thay đổi nghiệp vụ phải build thành công và có kiểm thử cho cả trường hợp thành công lẫn trường hợp bị từ chối. Ví dụ, nếu một trong hai cuốn được yêu cầu không đủ điều kiện mượn, kiểm thử phải xác nhận hệ thống từ chối cả yêu cầu, không tạo phiếu và cuốn còn lại vẫn sẵn sàng.
 
 ### Nguyên tắc phối hợp
 

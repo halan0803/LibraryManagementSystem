@@ -42,6 +42,7 @@ public sealed class HangChoService
             return dk;
         dk.Huy(lyDo);
         dk.GhiThoiDiemKetThuc(b.DongHo.BayGio);
+        b.GiaoDich.Kho<DangKyCho>().CapNhat(dk);
         XuLyHuyTrongGiaoDich(p, dk);
         return dk;
     });
@@ -65,6 +66,7 @@ public sealed class HangChoService
         {
             dk.KetThuc(lyDo);
             dk.GhiThoiDiemKetThuc(b.DongHo.BayGio);
+            b.GiaoDich.Kho<DangKyCho>().CapNhat(dk);
         }
     }
     public DotGiuCho? XetDotGiuCho(PhienLamViec p, string yeuCau, string cuon, string dongNguon, string suKien) => b.Lenh(p, yeuCau, "XetDotGiuCho", new { cuon, dongNguon, suKien }, () => Quyen(p, null, true), () => XetTrongGiaoDich(p, cuon, dongNguon, suKien));
@@ -104,6 +106,7 @@ public sealed class HangChoService
         }
         b.Them(dot);
         KichHoat(p, dot, dot.DanhSachLuot[0]);
+        b.GiaoDich.Kho<DotGiuCho>().CapNhat(dot);
         return dot;
     }
     private void KichHoat(PhienLamViec p, DotGiuCho dot, LuotGiuCho luot)
@@ -114,6 +117,8 @@ public sealed class HangChoService
         var dk = b.Lay<DangKyCho>(luot.MaDangKy);
         dk.Chuyen(TrangThaiDangKyCho.DangCoQuyenNhan);
         c.ChuyenTrangThai(TrangThaiCuonSach.DangGiuCho);
+        b.GiaoDich.Kho<DangKyCho>().CapNhat(dk);
+        b.GiaoDich.Kho<CuonSach>().CapNhat(c);
         b.ThongBao(p, luot.MaLuot, dk.MaDocGia, $"Bạn có quyền nhận cuốn {dot.MaCuon} đến {luot.HanNhan:dd/MM/yyyy HH:mm zzz}.", LoaiThongBao.QuyenNhan);
     }
     private void TiepTheo(PhienLamViec p, DotGiuCho dot)
@@ -186,6 +191,7 @@ public sealed class HangChoService
             }
         }
         TiepTheo(p, dot);
+        b.GiaoDich.Kho<DotGiuCho>().CapNhat(dot);
     }
     public DotGiuCho ChuyenLuot(PhienLamViec p, string yeuCau, string maDot) => b.Lenh(p, yeuCau, "ChuyenLuot", new { maDot }, () => Quyen(p, null, true), () => { var dot = b.Lay<DotGiuCho>(maDot); YeuCau(dot.TrangThai == TrangThaiDotGiuCho.DangXuLy, "DOT_CU", "Đợt không đang xử lý."); XuLyDotTrongGiaoDich(p, dot); return dot; });
     internal void KiemTraNhanTrongGiaoDich(string cuon, string docGia)
@@ -225,7 +231,7 @@ public sealed class HangChoService
         }
         dot.KetThuc();
     }
-    // Hook public cho Quân: chỉ gọi khi giao dịch mượn ngoài cùng đang mở và đã kiểm tra quyền.
+    // Hook public : chỉ gọi khi giao dịch mượn ngoài cùng đang mở và đã kiểm tra quyền.
     public void XetLaiNguoiHai(PhienLamViec p, string cuon, string docGia, string dongMoi)
     {
         Quyen(p, null, true);

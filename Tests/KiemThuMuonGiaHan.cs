@@ -12,7 +12,9 @@ internal static class KiemThuMuonGiaHan
             ("UC03 mượn nhiều cuốn, gửi lặp và kiểm tra hạn mức", MuonNhieuCuon),
             ("UC03 hoàn tác khi cuốn thứ hai không hợp lệ", HoanTac),
             ("UC04 kiểm tra quyền, gia hạn một lần và đọc lại từ JSON", GiaHanMotLan),
-            ("UC04 chặn gia hạn khi có hàng chờ", ChanKhiCoHangCho)
+            ("UC04 chặn gia hạn khi có hàng chờ", ChanKhiCoHangCho),
+            ("UC05 trả đúng hạn và gửi lại yêu cầu", TraDungHan),
+            ("UC05 chốt phạt, đối soát và thu đủ", TraTreVaThuTien)
         };
 
         int soLoi = 0;
@@ -30,7 +32,7 @@ internal static class KiemThuMuonGiaHan
             }
         }
 
-        Console.WriteLine($"Mượn và gia hạn: {cacCa.Length - soLoi}/{cacCa.Length} PASS");
+        Console.WriteLine($"Mượn, gia hạn và trả sách: {cacCa.Length - soLoi}/{cacCa.Length} PASS");
         return soLoi;
     }
 
@@ -82,6 +84,52 @@ internal static class KiemThuMuonGiaHan
         TuChoi("CO_HANG_CHO", () => f.App.GiaHan.GiaHan(f.DocGia(1), MaMoi(), "DM1", 3));
     }
 
+    private static void TraDungHan()
+    {
+        using var f = new DuLieu();
+        string yeuCau = MaMoi();
+        long phienBan = f.Chon("C1").PhienBan;
+        var ketQua = f.App.MuonTra.TraTungCuon(f.ThuThu, yeuCau, "DM1", "C1",
+            phienBan, f.Ngay, TinhTrangSach.Tot);
+        Bang(0m, ketQua.TienPhat);
+        Bang<string?>(null, ketQua.MaKhoanPhat);
+        Bang<DateOnly?>(f.Ngay, f.Doc<ChiTietMuon>("DM1").NgayKetThucNghiaVu);
+        Bang(ketQua, f.App.MuonTra.TraTungCuon(f.ThuThu, yeuCau, "DM1", "C1",
+            phienBan, f.Ngay, TinhTrangSach.Tot));
+    }
+
+    private static void TraTreVaThuTien()
+    {
+        using var f = new DuLieu();
+        var han = f.Doc<ChiTietMuon>("DM1").HanTra;
+        var ngayNhan = f.App.Lich.CongNgayMoCua(han, 2);
+        f.DatNgay(f.App.Lich.CongNgayMoCua(ngayNhan, 1));
+        var ketQua = f.App.MuonTra.TraTungCuon(f.ThuThu, MaMoi(), "DM1", "C1",
+            f.Chon("C1").PhienBan, ngayNhan, TinhTrangSach.HaoMon);
+        Bang(10000m, ketQua.TienPhat);
+        string maKhoan = ketQua.MaKhoanPhat!;
+        Bang<DateOnly?>(ngayNhan, f.Doc<ChiTietMuon>("DM1").NgayNhan);
+        Bang<DateOnly?>(null, f.Doc<ChiTietMuon>("DM1").NgayKetThucNghiaVu);
+
+        var thieu = new[] { new TienThu(maKhoan, 5000m) };
+        TuChoi("TIEN", () => f.App.ThanhToan.XacNhanThu(f.ThuThu, MaMoi(), thieu, "Biên nhận"));
+        Bang(0, f.DocGiaoDich(tx => tx.Kho<PhieuThu>().LayTatCa().Count));
+        f.App.ThanhToan.GhiChoDoiSoat(f.ThuThu, MaMoi(), maKhoan, "Cần kiểm tra chứng từ");
+        var du = new[] { new TienThu(maKhoan, 10000m) };
+        TuChoi("DOI_SOAT", () => f.App.ThanhToan.XacNhanThu(f.ThuThu, MaMoi(), du, "Biên nhận"));
+        f.App.ThanhToan.DoiSoat(f.QuanLy, MaMoi(), maKhoan, "Đã kiểm tra chứng từ");
+        string yeuCau = MaMoi();
+        var phieu = f.App.ThanhToan.XacNhanThu(f.ThuThu, yeuCau, du, "Biên nhận");
+        Bang(phieu.MaPhieuThu, f.App.ThanhToan.XacNhanThu(f.ThuThu, yeuCau, du, "Biên nhận").MaPhieuThu);
+        f.MoLai();
+        Bang(1, f.DocGiaoDich(tx => tx.Kho<PhieuThu>().LayTatCa().Count));
+        Bang(10000m, f.Doc<PhieuThu>(phieu.MaPhieuThu).TongTien);
+        Bang(phieu.MaPhieuThu, f.Doc<PhieuThu>(phieu.MaPhieuThu).ChiTiet.Single().MaPhieuThu);
+        Bang(TrangThaiKhoanThu.DaThuDu, f.Doc<KhoanThu>(maKhoan).TrangThai);
+        Bang<DateOnly?>(ngayNhan, f.Doc<ChiTietMuon>("DM1").NgayNhan);
+        Bang<DateOnly?>(f.Ngay, f.Doc<ChiTietMuon>("DM1").NgayKetThucNghiaVu);
+    }
+
     private static void Bang<T>(T mongDoi, T thucTe)
     {
         if (!EqualityComparer<T>.Default.Equals(mongDoi, thucTe))
@@ -105,7 +153,7 @@ internal static class KiemThuMuonGiaHan
     private sealed class DuLieu : IDisposable
     {
         private readonly string tep = Path.Combine(AppContext.BaseDirectory, $"kiem-thu-muon-{MaMoi()}.json");
-        private readonly IDongHo dongHo = new DongHoThu();
+        private readonly DongHoThu dongHo = new DongHoThu();
         private readonly IDonViTruongGateway nhaTruong = new DonViTruongGiaLap([
             new("SV1", "Sinh viên 1", LoaiDocGia.SinhVien, true),
             new("SV2", "Sinh viên 2", LoaiDocGia.SinhVien, true)
@@ -113,7 +161,9 @@ internal static class KiemThuMuonGiaHan
 
         internal NghiepVuMuon App { get; private set; }
         internal PhienLamViec ThuThu => App.TaiKhoan.DangNhap("thuthu", "Demo123!");
-        internal DateOnly Ngay => dongHo.HomNay;
+        internal DateOnly Ngay => ((IDongHo)dongHo).HomNay;
+        internal PhienLamViec QuanLy => App.TaiKhoan.DangNhap("quanly", "Demo123!");
+        internal void DatNgay(DateOnly ngay) => dongHo.BayGio = new(ngay.ToDateTime(new TimeOnly(10, 0)), TimeSpan.FromHours(7));
 
         internal DuLieu()
         {
@@ -125,6 +175,8 @@ internal static class KiemThuMuonGiaHan
                 tx.Kho<NhanVien>().Luu(new("NV1", "Thủ thư", VaiTro.ThuThu));
                 tx.Kho<TaiKhoan>().Luu(new("TT", "thuthu", "Demo123!", VaiTro.ThuThu,
                     maNhanVien: "NV1"));
+                tx.Kho<NhanVien>().Luu(new("NV2", "Quản lý", VaiTro.QuanLy));
+                tx.Kho<TaiKhoan>().Luu(new("QL", "quanly", "Demo123!", VaiTro.QuanLy, maNhanVien: "NV2"));
                 for (int i = 1; i <= 2; i++)
                 {
                     tx.Kho<DocGia>().Luu(new SinhVien($"DG{i}", $"SV{i}", $"Sinh viên {i}"));
@@ -190,6 +242,6 @@ internal static class KiemThuMuonGiaHan
 
     private sealed class DongHoThu : IDongHo
     {
-        public DateTimeOffset BayGio { get; } = new(2026, 11, 23, 10, 0, 0, TimeSpan.FromHours(7));
+        public DateTimeOffset BayGio { get; set; } = new(2026, 11, 23, 10, 0, 0, TimeSpan.FromHours(7));
     }
 }

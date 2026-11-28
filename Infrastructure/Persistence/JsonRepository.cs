@@ -53,6 +53,8 @@ internal static class DinhDanh
         PhieuMuon a => a.MaPhieu,
         ChiTietMuon a => a.MaDong,
         KhoanThu a => a.MaKhoan,
+        PhieuThu a => a.MaPhieuThu,
+        BienBanThanhLy a => a.MaThanhLy,
         SuKienThuVien a => a.MaSuKien,
         XuLySuKien a => a.MaXuLy,
         BienBanSuCo a => a.MaSuCo,

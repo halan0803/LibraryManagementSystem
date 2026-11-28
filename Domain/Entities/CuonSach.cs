@@ -99,16 +99,6 @@ public class CuonSach
         MaPheDuyetGia = Chuoi(maDuyet, nameof(maDuyet));
         PhienBanDuLieu++;
     }
-    internal void GhiSoHuuSauTatToanMat()
-    {
-        YeuCau(TrangThaiLuuThong == TrangThaiCuonSach.Mat && QuyenSoHuu == QuyenSoHuuSach.ThuVien,
-            "BAO_MAT", "Chỉ chuyển sở hữu cuốn đã tất toán mất.");
-        QuyenSoHuu = QuyenSoHuuSach.NguoiDoc;
-        MaKe = null;
-        ViTriChiTiet = null;
-        PhienBanDuLieu++;
-    }
-
     public void ThanhLy()
     {
         YeuCau(TinhTrangVatLy == TinhTrangSach.HuNang && TrangThaiLuuThong == TrangThaiCuonSach.DangSua, "KHONG_THANH_LY", "Chỉ thanh lý cuốn hư nặng đã được tiếp nhận.");

@@ -1,5 +1,5 @@
 namespace LibraryManagementSystem.Infrastructure.Gateways;
-// Dữ liệu giả lập
+// Dữ liệu giả lập 
 public sealed class DonViTruongGiaLap : IDonViTruongGateway
 {
     private readonly Dictionary<string, ThongTinTruong> duLieu;

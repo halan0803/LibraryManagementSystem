@@ -209,7 +209,7 @@ public static class KiemThuTheService
             && thongTin.LoaiDocGia == loai;
     }
 
-    private sealed class KhoKiemThu : ITransactionManager
+    internal sealed class KhoKiemThu : ITransactionManager
     {
         private sealed record BanGhi(Type Kieu, string Json);
 
@@ -292,6 +292,14 @@ public static class KiemThuTheService
                     YeuCauDaXuLy yeuCau => yeuCau.MaYeuCau,
                     SuKienThuVien suKien => suKien.MaSuKien,
                     NhatKyThaoTac nhatKy => nhatKy.MaNhatKy,
+
+                    TacGia tacGia => tacGia.MaTacGia,
+                    TheLoai theLoai => theLoai.MaTheLoai,
+                    NhaXuatBan nhaXuatBan => nhaXuatBan.MaNXB,
+                    KeSach ke => ke.MaKe,
+                    DauSach dauSach => dauSach.MaDauSach,
+                    CuonSach cuon => cuon.MaCuon,
+
                     _ => throw new InvalidOperationException(
                         $"Kho kiểm thử chưa hỗ trợ {typeof(T).Name}.")
                 };

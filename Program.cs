@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using LibraryManagementSystem.Tests;
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -6,6 +6,7 @@ Console.OutputEncoding = Encoding.UTF8;
 int soCaLoi = KiemThuNenTang.RunAll();
 soCaLoi += KiemThuTheThuVien.RunAll();
 soCaLoi += KiemThuTheService.RunAll();
+soCaLoi += KiemThuSachService.RunAll();
 soCaLoi += KiemThuMuonGiaHan.RunAll();
 
 // 0: kiểm thử đạt; 1: có ca thất bại.

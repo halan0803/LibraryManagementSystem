@@ -72,8 +72,15 @@ public sealed class TaiKhoanService
     }
     internal void VoHieuHoaTrongGiaoDich(string maDocGia)
     {
-        foreach (var a in tx.Kho<TaiKhoan>().LayTatCa().Where(x => x.MaDocGia == maDocGia))
-            a.VoHieuHoa();
+        var khoTaiKhoan = tx.Kho<TaiKhoan>();
+
+        foreach (var taiKhoan in khoTaiKhoan.LayTatCa()
+            .Where(x => x.MaDocGia == maDocGia)
+            .ToArray())
+        {
+            taiKhoan.VoHieuHoa();
+            khoTaiKhoan.CapNhat(taiKhoan);
+        }
     }
     public void VoHieuHoa(PhienLamViec p, string maYeuCau, string maTaiKhoan, string lyDo, BoDieuPhoi dieuPhoi) => dieuPhoi.Lenh(p, maYeuCau, "VoHieuHoaTaiKhoan", new { maTaiKhoan, lyDo }, () => KiemTraQuyen(p, null, false, VaiTro.QuanLy), () => { Chuoi(lyDo, nameof(lyDo)); var a = BatBuoc(tx.Kho<TaiKhoan>().LayTheoMa(maTaiKhoan), "tài khoản"); a.VoHieuHoa(); return a.MaTaiKhoan; });
 }

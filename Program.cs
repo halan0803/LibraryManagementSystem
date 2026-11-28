@@ -9,6 +9,7 @@ soCaLoi += KiemThuTheService.RunAll();
 soCaLoi += KiemThuSachService.RunAll();
 soCaLoi += KiemThuMuonGiaHan.RunAll();
 soCaLoi += KiemThuHangChoService.RunAll();
+soCaLoi += KiemThuHoSoService.RunAll();
 
 // 0: kiểm thử đạt; 1: có ca thất bại.
 Environment.ExitCode = soCaLoi == 0 ? 0 : 1;

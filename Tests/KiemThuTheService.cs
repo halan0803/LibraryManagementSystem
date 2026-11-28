@@ -4,6 +4,7 @@ using LibraryManagementSystem.Application.Services;
 using LibraryManagementSystem.Domain.Entities;
 using LibraryManagementSystem.Domain.Enums;
 using LibraryManagementSystem.Domain.Exceptions;
+using LibraryManagementSystem.Application.Events;
 
 namespace LibraryManagementSystem.Tests;
 
@@ -280,6 +281,7 @@ public static class KiemThuTheService
                 return new BanGhi(kieu, JsonSerializer.Serialize(doiTuong, kieu));
             }
 
+            
             private static (Type, string) Khoa(T doiTuong)
             {
                 string ma = doiTuong switch
@@ -299,6 +301,12 @@ public static class KiemThuTheService
                     KeSach ke => ke.MaKe,
                     DauSach dauSach => dauSach.MaDauSach,
                     CuonSach cuon => cuon.MaCuon,
+
+                    DangKyCho dangKy => dangKy.MaDangKy,
+                    DotGiuCho dot => dot.MaDot,
+                    PhieuMuon phieu => phieu.MaPhieu,
+                    ChiTietMuon dong => dong.MaDong,
+                    LanSanSangDaXet lan => lan.MaLan,
 
                     _ => throw new InvalidOperationException(
                         $"Kho kiểm thử chưa hỗ trợ {typeof(T).Name}.")

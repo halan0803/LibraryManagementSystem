@@ -290,6 +290,8 @@ public static class KiemThuTheService
                     NhanVien nhanVien => nhanVien.MaNhanVien,
                     KhoanThu khoanThu => khoanThu.MaKhoan,
                     YeuCauDaXuLy yeuCau => yeuCau.MaYeuCau,
+                    SuKienThuVien suKien => suKien.MaSuKien,
+                    NhatKyThaoTac nhatKy => nhatKy.MaNhatKy,
 
                     TacGia tacGia => tacGia.MaTacGia,
                     TheLoai theLoai => theLoai.MaTheLoai,

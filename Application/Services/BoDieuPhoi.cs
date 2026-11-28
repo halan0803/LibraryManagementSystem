@@ -13,6 +13,8 @@ public sealed class BoDieuPhoi
     public ITransactionManager GiaoDich { get; }
     public IDongHo DongHo { get; }
     public TaiKhoanService TaiKhoan { get; }
+    internal Action? SauCommit { get; set; }
+    public string? CanhBaoSauCommit { get; private set; }
 
     public BoDieuPhoi(
         ITransactionManager giaoDich,
@@ -54,6 +56,7 @@ public sealed class BoDieuPhoi
             NoiDung = noiDung
         });
 
+        T ketQua;
         GiaoDich.BatDau();
         try
         {
@@ -76,19 +79,42 @@ public sealed class BoDieuPhoi
                 return ketQuaCu;
             }
 
-            T ketQua = thucHien();
+            ketQua = thucHien();
             kho.Luu(new YeuCauDaXuLy(
                 maYeuCau, noiDungJson, JsonSerializer.Serialize(ketQua)));
 
+            var suKien = new SuKienThuVien(MaMoi(), tenLenh, maYeuCau, null,
+                DongHo.BayGio, phien.MaTaiKhoan, tenLenh);
+            GhiSuKien(suKien);
+            Them(new NhatKyThaoTac(MaMoi(), phien.MaTaiKhoan, tenLenh, DongHo.BayGio,
+                "YeuCau", maYeuCau, suKien.MaSuKien, sau: JsonSerializer.Serialize(noiDung)));
             GiaoDich.Commit();
-            return ketQua;
         }
         catch
         {
             GiaoDich.Rollback();
             throw;
         }
+
+        CanhBaoSauCommit = null;
+        try
+        {
+            SauCommit?.Invoke();
+        }
+        catch (Exception loi)
+        {
+            CanhBaoSauCommit = loi.Message;
+        }
+
+        return ketQua;
     }
+
+    internal void GhiSuKien(SuKienThuVien suKien) => Them(suKien);
+
+    internal void ThongBao(PhienLamViec phien, string doiTuong, string docGia,
+        string noiDung, LoaiThongBao loai) =>
+        GhiSuKien(new SuKienThuVien(MaMoi(), loai.ToString(), doiTuong, docGia,
+            DongHo.BayGio, phien.MaTaiKhoan, noiDung, loai));
 
     internal T Lay<T>(string ma) where T : class =>
         BatBuoc(GiaoDich.Kho<T>().LayTheoMa(ma), typeof(T).Name);
@@ -122,4 +148,16 @@ public sealed class BoDieuPhoi
                     || khoan.TrangThai == TrangThaiKhoanThu.ChoDoiSoat)),
             "CON_NO", "Độc giả còn khoản nợ hoặc khoản chờ đối soát.");
     }
+
+    internal int SoNghiaVu(string maDocGia)
+    {
+        var maPhieu = TatCa<PhieuMuon>().Where(phieu => phieu.MaDocGia == maDocGia)
+            .Select(phieu => phieu.MaPhieu).ToHashSet();
+        return TatCa<ChiTietMuon>().Count(dong =>
+            maPhieu.Contains(dong.MaPhieu) && dong.NgayKetThucNghiaVu is null);
+    }
+
+    internal TheThuVien TheHienHanh(string maDocGia) =>
+        BatBuoc(TatCa<TheThuVien>().SingleOrDefault(the =>
+            the.MaDocGia == maDocGia && the.TrangThai == TrangThaiThe.HienHanh), "thẻ hiện hành");
 }

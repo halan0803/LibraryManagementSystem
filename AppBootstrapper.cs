@@ -11,6 +11,9 @@ public sealed class AppBootstrapper
 
     public string DuongDanDuLieu { get; }
 
+    public NghiepVuMuon MoNghiepVuMuon(IDonViTruongGateway nhaTruong) =>
+        new(DuongDanDuLieu, CauHinh, DongHo, nhaTruong);
+
     public AppBootstrapper(
         string thuMucGoc,
         IDongHo? dongHo = null)

@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Application.Observers;
 using LibraryManagementSystem.Application.Services;
 using LibraryManagementSystem.Domain.Services;
+using LibraryManagementSystem.Domain.Strategies;
 using LibraryManagementSystem.Infrastructure.Configuration;
 using LibraryManagementSystem.Infrastructure.Logging;
 using LibraryManagementSystem.Infrastructure.Notifications;
@@ -20,6 +21,8 @@ public sealed class NghiepVuMuon : IDisposable
     public KhoSachService KhoSach { get; }
     public MuonTraService MuonTra { get; }
     public GiaHanService GiaHan { get; }
+    public ThanhToanService ThanhToan { get; }
+    public SuCoService SuCo { get; }
 
     internal NghiepVuMuon(string duongDan, CauHinhThuVien cauHinh, IDongHo dongHo,
         IDonViTruongGateway nhaTruong)
@@ -32,7 +35,10 @@ public sealed class NghiepVuMuon : IDisposable
         The = new TheService(dieuPhoi, nhaTruong);
         HangCho = new HangChoService(dieuPhoi, Lich);
         KhoSach = new KhoSachService(dieuPhoi, HangCho);
-        MuonTra = new MuonTraService(dieuPhoi, Lich, KhoSach, HangCho);
+        var phat = new PhatTheoNgay(cauHinh.DonGiaPhat);
+        MuonTra = new MuonTraService(dieuPhoi, Lich, KhoSach, HangCho, phat);
+        ThanhToan = new ThanhToanService(dieuPhoi, Lich, phat);
+        SuCo = new SuCoService(dieuPhoi, HangCho, Lich, phat);
         GiaHan = new GiaHanService(dieuPhoi, Lich);
 
         var suKien = new ThuVienEventPublisher(GiaoDich);
